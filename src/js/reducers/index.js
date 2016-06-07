@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import friendList from './friendList';
+import pageList from './pageList';
 
 const rootReducer = combineReducers({
-  friendList
+  pageList
 });
 
 export default rootReducer;

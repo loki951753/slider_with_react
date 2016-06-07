@@ -1,5 +1,5 @@
 import '../styles/bootstrap.min.css';
-import '../styles/styles.scss';
+import '../styles/styles.sass';
 
 import React from 'react';
 import ReactDOM from 'react-dom';

@@ -42,7 +42,7 @@ const plugins = [
 const sassLoaders = [
   'css-loader?sourceMap',
   'postcss-loader',
-  'sass-loader?outputStyle=compressed'
+  'sass-loader?outputStyle=compressed&indentedSyntax=true'
 ];
 
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
   },
   resolve: {
     // We can now require('file') instead of require('file.jsx')
-    extensions: ['', '.js', '.jsx', '.scss']
+    extensions: ['', '.js', '.jsx', '.sass']
   },
   module: {
     noParse: /\.min\.js$/,
@@ -71,7 +71,7 @@ module.exports = {
         include: PATHS.app
       },
       {
-        test: /\.scss$/,
+        test: /\.sass$/,
         loader: ExtractTextPlugin.extract('style-loader', sassLoaders.join('!'))
       },
       {

@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
+const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 
 // App files location
 const PATHS = {
@@ -18,14 +19,15 @@ const plugins = [
     'process.env.NODE_ENV': JSON.stringify('development'),
     __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || 'false'))
   }),
-  new webpack.optimize.OccurenceOrderPlugin()
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new OpenBrowserPlugin({url: 'http://localhost:3000'})
 ];
 
 const sassLoaders = [
   'style-loader',
   'css-loader?sourceMap',
   'postcss-loader',
-  'sass-loader?outputStyle=expanded'
+  'sass-loader?outputStyle=expanded&indentedSyntax=true'
 ];
 
 module.exports = {
@@ -45,7 +47,7 @@ module.exports = {
   },
   resolve: {
     // We can now require('file') instead of require('file.jsx')
-    extensions: ['', '.js', '.jsx', '.scss']
+    extensions: ['', '.js', '.jsx', '.sass']
   },
   module: {
     loaders: [
@@ -55,7 +57,7 @@ module.exports = {
         include: PATHS.app
       },
       {
-        test: /\.scss$/,
+        test: /\.sass$/,
         loader: sassLoaders.join('!')
       },
       {
