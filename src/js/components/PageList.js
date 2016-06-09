@@ -27,9 +27,10 @@ class PageList extends Component {
       <div className="page-list">
         <ul>
           {
-            pagesById.map((page)=>(
+            pagesById.map((page, index)=>(
               <PageListItem
                 key={page.id}
+                index={index}
                 page={page}
                 selectedId={selectedId}
                 onClick={()=>(this.onClick(page.id))}
