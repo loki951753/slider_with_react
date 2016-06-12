@@ -1,17 +1,77 @@
 import * as types from '../constants/ActionTypes';
 import { assign } from 'lodash';
+import utils from '../common/utils'
 
 const initialState = {
-  pages: [0, 1],
+  pages: [0, 1, 2],
   selectedId: 1,
   pagesById: [{
     id: 0,
-    content: "douyu"
+    content: "douyu",
+    items: [
+      {
+        id : 0,
+        index: 0,
+        type: 'text',
+        props: {
+          style: {
+            'backgroundColor':'yellow'
+          }
+          , innerText: 'TeXt0'
+        }
+
+      }
+    ]
   },{
     id: 1,
-    content: "shark"
-  }]
+    content: "shark",
+    items: [
+      {
+        id : 0,
+        index: 0,
+        type: 'text',
+        props: {
+          style: {
+            'backgroundColor':'yellow'
+          }
+          , innerText: 'TeXt1'
+        }
+
+      }
+    ]
+  },
+  {
+    id: 2,
+    content: "text",
+    items: [
+      {
+        id : 0,
+        index: 0,
+        type: 'text',
+        props: {
+          style: {
+            'backgroundColor':'yellow'
+          }
+          , innerText: 'TeXt2'
+        }
+
+      }
+    ]
+  }],
+  selectedCom: 0
 };
+
+const genId = function(state){
+  const currentPage = utils.findPageById(state.pagesById, state.selectedId)
+  let maxId = 0
+
+  currentPage.items.forEach((ele)=> {
+    if(ele.id >= maxId){
+      maxId = ele.id;
+    }
+  })
+  return maxId + 1
+}
 
 export default function(state = initialState, action){
   switch (action.type) {
@@ -30,7 +90,8 @@ export default function(state = initialState, action){
         pagesById: [...state.pagesById.slice(0, selectedIndex+1),
           {
             id: newId,
-            content: action.content
+            content: action.content,
+            items: []
           },
           ...state.pagesById.slice(selectedIndex + 1)
         ],
@@ -48,6 +109,45 @@ export default function(state = initialState, action){
       }
     }
 
+    case types.ADD_TEXT:{
+      console.log("i am add text");
+      console.log(action);
+
+      const id = genId(state)
+      const text = {
+        id: id,
+        type: "text",
+        props:{
+          style: {
+            "zIndex": `id`,
+            ...action.props.style
+          },
+
+          innerText: action.props.innerText
+        }
+      }
+
+      return {
+        ...state,
+        pagesById: [
+          ...utils.insertText(state.pagesById, state.selectedId, text)
+        ],
+        selectedCom: id
+      }
+
+      break;
+    }
+
+    case types.SELECT_COM: {
+      console.log("select component");
+
+      return {
+        ...state,
+        selectedCom: action.id
+      }
+
+      break;
+    }
     default:
       return state
   }

@@ -4,8 +4,6 @@ import { bindActionCreators } from 'redux';
 
 import classnames from 'classnames';
 
-import tpl from './tpl'
-
 import './MaterialPanel.sass'
 
 import * as actions from '../actions/WorkspaceActions.js'
@@ -20,7 +18,10 @@ class MaterialPanel extends Component{
   _addText(){
     console.log('_addText');
     const textDefaultProps = {
-
+      style: {
+        'backgroundColor':'yellow'
+      }
+      , innerText: 'Another TeXt'
     }
     this.addText(textDefaultProps)
   }

@@ -42,31 +42,33 @@ class Carousel extends Component {
 
 
   render(){
-    const { pagesById, selectedId, pageData } = this.props;
+    const { pagesById, selectedId, selectedCom } = this.props;
+
+    const pageData = utils.findPageById(pagesById, selectedId)
 
     const tpl="<div>test</div>"
     console.log(this.props);
     return (
       <div id="swiperContainer" className="swiper-container" style={style}>
         <div className="swiper-wrapper">
-          {pageData.map((page)=>(
-            <div key={page.pageId} className={classnames('swiper-slide', {'selected': selectedId === page.pageId})}>
-              {
-                page.items.map((item)=>{
-                  console.log(1111);
-                  console.log(item);
-                  switch (item.type) {
-                    case 'text':
-                      console.log(item);
-                      return <Com_Text key={item.id} {...item.props}></Com_Text>
-                      break;
-                    default:
-                      return null
-                  }
-                })
-              }
-            </div>
-          ))}
+          {
+            pagesById.map((page)=>(
+              <div key={page.id} className={classnames('swiper-slide', {'selected': selectedId === page.id})}>
+                {
+                  page.items.map((item)=>{
+                    switch (item.type) {
+                      case 'text':
+                        console.log(item);
+                        return <Com_Text key={item.id} id={item.id} {...item.props} isSelected={selectedCom === item.id}></Com_Text>
+                        break;
+                      default:
+                        return null
+                    }
+                  })
+                }
+              </div>
+            ))
+          }
         </div>
 
         <div className="swiper-pagination"></div>
@@ -79,8 +81,7 @@ function mapStateToProps(state) {
   return {
     selectedId: state.pageList.selectedId,
     pagesById: state.pageList.pagesById,
-
-    pageData: state.workspace
+    selectedCom: state.pageList.selectedCom
   };
 }
 

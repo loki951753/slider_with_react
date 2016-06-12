@@ -6,3 +6,5 @@ export const ADD_PAGE = 'ADD_PAGE';
 export const SELECT_PAGE = 'SELECT_PAGE'
 
 export const ADD_TEXT = 'ADD_TEXT';
+
+export const SELECT_COM = 'SELECT_COM'
