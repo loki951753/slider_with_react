@@ -12,10 +12,10 @@ const Page = ({ index, onClick, page, selectedId})=>{
       <span>{index + 1}</span>
       <div
         className={
-          classnames('page-list-item', {'selected': selectedId === page.id})
+          classnames('page-list-item', {'selected': selectedId === page.get('id')})
         }
         >
-        {page.content}
+        {page.get('content')}
       </div>
     </li>
   )

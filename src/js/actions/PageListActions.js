@@ -13,3 +13,12 @@ export function selectPage(id){
     id
   }
 }
+
+export function moveCom(id, left, top){
+  return {
+    type: types.MOVE_COM,
+    id,
+    left,
+    top
+  }
+}

@@ -2,15 +2,15 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 
+import * as actions from '../actions/PageListActions.js'
+
 import PageListItem from './PageListItem.js'
 import './PageList.sass'
 
-import * as actions from '../actions/PageListActions.js'
 
 class PageList extends Component {
   constructor(props, context){
     super(props);
-    console.log(this.props);
 
     this.onClick = this.onClick.bind(this);
     this.addPage = this.addPage.bind(this);
@@ -27,15 +27,15 @@ class PageList extends Component {
       <div className="page-list">
         <ul>
           {
-            pagesById.map((page, index)=>(
-              <PageListItem
-                key={page.id}
+            pagesById.map((page, index)=>{
+              return <PageListItem
+                key={page.get('id')}
                 index={index}
                 page={page}
                 selectedId={selectedId}
-                onClick={()=>(this.onClick(page.id))}
+                onClick={()=>(this.onClick(page.get('id')))}
               />
-            ))
+            })
           }
         </ul>
         <div className="add-page">
@@ -48,8 +48,8 @@ class PageList extends Component {
 
 function mapStateToProps(state) {
   return {
-    pagesById: state.pageList.pagesById,
-    selectedId: state.pageList.selectedId
+    pagesById: state.pageList.get('pagesById'),
+    selectedId: state.pageList.get('selectedPageId')
   };
 }
 

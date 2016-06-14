@@ -1,21 +1,41 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
-
-import classnames from 'classnames';
+import { bindActionCreators, compose } from 'redux';
 
 import * as actions from '../../actions/WorkspaceActions.js'
 
 import './BaseCom.sass'
+
+//vendor
+import classnames from 'classnames';
+
+import ItemTypes from './ItemTypes'
+import { DragSource } from 'react-dnd'
+
+//dnd interface
+const comSource = {
+  beginDrag(props){
+    const { id, left, top } = props;
+    return { id, left, top}
+  }
+}
+
+//dnd interface
+const collect = function(connect, monitor){
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
 //define some basic user interactive in class BaseCom
 class BaseCom extends Component {
   constructor(props){
     super(props)
 
-    const {selectedId, pagesById, selectCom, id} = props
+    const { selectCom, id} = props
     //variables
-    this.selectedId = selectedId
-    this.pagesById = pagesById
+    // this.pagesById = pagesById
     this.id = id
 
     //functions
@@ -26,28 +46,28 @@ class BaseCom extends Component {
   handleClick(){
     this.selectCom(this.id)
   }
-  // getStyle(){
-  //   if (this.isSelected) {
-  //     return {
-  //       ...this.props.style,
-  //       outline: 'solid'
-  //     }
-  //   }else {
-  //     return this.props.style
-  //   }
-  // }
+
   render(){
     const handleClick = this.handleClick.bind(this)
-    return (
-      <div onClick={handleClick} style={this.props.style} className={classnames({'com-selected': this.props.isSelected})}>{this.props.children}</div>
+    const { connectDragSource } = this.props
+
+    return connectDragSource(
+      <div onClick={handleClick}
+           style={{
+             top: this.props.top,
+             left: this.props.left
+           }}
+           className={classnames({'com-item':true,'com-selected': this.isSelected})}>
+            {this.props.children}
+      </div>
     )
   }
 }
 function mapStateToProps(state) {
   return {
-    selectedId: state.pageList.selectedId,
-    pagesById: state.pageList.pagesById,
-    selectedCom: state.SelectedCom
+    // selectedPageId: state.pageList.get('selectedPageId'),
+    // selectedComId: state.pageList.get('selectedComId'),
+    // pagesById: state.pageList.get('pagesById')
   };
 }
 
@@ -57,8 +77,11 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-BaseCom = connect(mapStateToProps, mapDispatchToProps)(BaseCom)
-
+// BaseCom = connect(mapStateToProps, mapDispatchToProps)(BaseCom)
+BaseCom = compose(
+  DragSource(ItemTypes.COM, comSource, collect),
+  connect(mapStateToProps, mapDispatchToProps)
+)(BaseCom)
 
 class Text extends Component {
   constructor(props){
@@ -66,7 +89,7 @@ class Text extends Component {
   }
   render(){
     return (
-      <BaseCom id={this.props.id} isSelected={this.props.isSelected}>
+      <BaseCom id={this.props.id} isSelected={this.props.isSelected} left={this.props.left} top={this.props.top}>
         <div style={this.props.style}>
           {this.props.innerText}
         </div>
