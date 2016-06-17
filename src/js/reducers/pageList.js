@@ -19,7 +19,8 @@ const initialState = Immutable.fromJS({
           'backgroundColor':'yellow'
         },
         innerText: 'TeXt0',
-        position: [0, 0]
+        position: [0, 0],
+        dimension: [50, 100]
       }
     ]
   },{
@@ -34,7 +35,8 @@ const initialState = Immutable.fromJS({
           'backgroundColor':'yellow'
         },
         innerText: 'TeXt1',
-        position: [0, 50]
+        position: [0, 50],
+        dimension: [50, 100]
       }
     ]
   }],
@@ -54,6 +56,10 @@ const genId = function(state){
 }
 
 export default function(state = initialState, action){
+
+  let selectedPageIndex
+  let selectedItemIndex
+
   switch (action.type) {
     case types.ADD_PAGE: {
       console.log('i am add page');
@@ -161,11 +167,32 @@ export default function(state = initialState, action){
       break;
     }
 
+    case types.STOP_DRAG:
+      console.log('stop drag');
+
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position'],
+                              v=>Immutable.List([action.x, action.y]))
+      break;
+
+    case types.STOP_RESIZE:
+      console.log('stop resize');
+
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension'],
+                              v=>Immutable.List([action.width, action.height]))
+      break;
+
+
     case types.MOVE_COM: {
       console.log("move item");
 
-      const selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-      const selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
       return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position'],
                               v=>Immutable.List([action.left, action.top]))
 

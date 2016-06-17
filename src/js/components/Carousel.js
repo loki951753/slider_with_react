@@ -27,25 +27,25 @@ const style = {
 
 let id = 0;
 
-const carouselTarget = {
-  drop(props, monitor, component){
-    console.log(component);
-    const item = monitor.getItem()
-    const delta = monitor.getDifferenceFromInitialOffset()
-    console.log(item);
-    console.log(delta);
-    const left = Math.round(item.left + delta.x)
-    const top = Math.round(item.top + delta.y)
-
-    props.moveCom(item.id, left, top);
-  }
-}
-
-function collect(connect) {
-  return {
-    connectDropTarget: connect.dropTarget()
-  };
-}
+// const carouselTarget = {
+//   drop(props, monitor, component){
+//     console.log(component);
+//     const item = monitor.getItem()
+//     const delta = monitor.getDifferenceFromInitialOffset()
+//     console.log(item);
+//     console.log(delta);
+//     const left = Math.round(item.left + delta.x)
+//     const top = Math.round(item.top + delta.y)
+//
+//     props.moveCom(item.id, left, top);
+//   }
+// }
+//
+// function collect(connect) {
+//   return {
+//     connectDropTarget: connect.dropTarget()
+//   };
+// }
 
 class Carousel extends Component {
   constructor(props){
@@ -55,12 +55,12 @@ class Carousel extends Component {
   }
 
   render(){
-    const { pagesById, selectedPageId, selectedComId, connectDropTarget } = this.props;
+    const { pagesById, selectedPageId, selectedComId } = this.props;
 
     // const pageData = utils.findPageById(pagesById, selectedId)
     const pageData = pagesById.find(page=>page.get('id')===selectedPageId)
 
-    return connectDropTarget(
+    return (
       <div id="swiperContainer" className="swiper-container" style={style}>
         <div className="swiper-wrapper">
           {
@@ -75,8 +75,10 @@ class Carousel extends Component {
                                          id={item.get('id')}
                                          style={item.get('style').toJS()}
                                          innerText={item.get('innerText')}
-                                         left={item.get('position').get('0')}
-                                         top={item.get('position').get('1')}
+                                         x={item.get('position').get('0')}
+                                         y={item.get('position').get('1')}
+                                         width={item.get('dimension').get('0')}
+                                         height={item.get('dimension').get('1')}
                                          isSelected={selectedComId === item.get('id')}
                                />
                         break;
@@ -108,14 +110,14 @@ function mapDispatchToProps(dispatch) {
   return {
     // addPage: bindActionCreators(actions.addPage, dispatch),
     // selectPage: bindActionCreators(actions.selectPage, dispatch)
-    moveCom: bindActionCreators(actions.moveCom, dispatch)
+    // moveCom: bindActionCreators(actions.moveCom, dispatch)
   };
 }
 
-// Carousel = connect(mapStateToProps, mapDispatchToProps)(Carousel)
+Carousel = connect(mapStateToProps, mapDispatchToProps)(Carousel)
 // Carousel = DropTarget(ItemTypes.COM, carouselTarget, collect)(Carousel)
-Carousel = flow(
-  DropTarget(ItemTypes.COM, carouselTarget, collect),
-  connect(mapStateToProps, mapDispatchToProps)
-)(Carousel)
+// Carousel = flow(
+//   DropTarget(ItemTypes.COM, carouselTarget, collect),
+//   connect(mapStateToProps, mapDispatchToProps)
+// )(Carousel)
 export default Carousel

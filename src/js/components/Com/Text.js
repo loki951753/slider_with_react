@@ -2,86 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, compose } from 'redux';
 
-import * as actions from '../../actions/WorkspaceActions.js'
+import * as actions from '../../actions/WorkspaceActions'
 
-import './BaseCom.sass'
-
-//vendor
-import classnames from 'classnames';
-
-import ItemTypes from './ItemTypes'
-import { DragSource } from 'react-dnd'
-
-//dnd interface
-const comSource = {
-  beginDrag(props){
-    const { id, left, top } = props;
-    return { id, left, top}
-  }
-}
-
-//dnd interface
-const collect = function(connect, monitor){
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }
-}
-
-//define some basic user interactive in class BaseCom
-class BaseCom extends Component {
-  constructor(props){
-    super(props)
-
-    const { selectCom, id} = props
-    //variables
-    // this.pagesById = pagesById
-    this.id = id
-
-    //functions
-    this.selectCom = selectCom
-
-    this.isSelected = props.isSelected
-  }
-  handleClick(){
-    this.selectCom(this.id)
-  }
-
-  render(){
-    const handleClick = this.handleClick.bind(this)
-    const { connectDragSource } = this.props
-
-    return connectDragSource(
-      <div onClick={handleClick}
-           style={{
-             top: this.props.top,
-             left: this.props.left
-           }}
-           className={classnames({'com-item':true,'com-selected': this.isSelected})}>
-            {this.props.children}
-      </div>
-    )
-  }
-}
-function mapStateToProps(state) {
-  return {
-    // selectedPageId: state.pageList.get('selectedPageId'),
-    // selectedComId: state.pageList.get('selectedComId'),
-    // pagesById: state.pageList.get('pagesById')
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    selectCom: bindActionCreators(actions.selectCom, dispatch)
-  };
-}
-
-// BaseCom = connect(mapStateToProps, mapDispatchToProps)(BaseCom)
-BaseCom = compose(
-  DragSource(ItemTypes.COM, comSource, collect),
-  connect(mapStateToProps, mapDispatchToProps)
-)(BaseCom)
+import BaseCom from './BaseCom'
 
 class Text extends Component {
   constructor(props){
@@ -89,13 +12,48 @@ class Text extends Component {
   }
   render(){
     return (
-      <BaseCom id={this.props.id} isSelected={this.props.isSelected} left={this.props.left} top={this.props.top}>
-        <div style={this.props.style}>
-          {this.props.innerText}
-        </div>
+      <BaseCom id={this.props.id}
+
+               isSelected={this.props.isSelected}
+               x={this.props.x}
+               y={this.props.y}
+               width={this.props.width}
+               height={this.props.height}
+
+               selectCom={this.props.selectCom}
+               stopDrag={this.props.stopDrag}
+               stopResize={this.props.stopResize}
+      >
+        <span>{this.props.innerText}</span>
       </BaseCom>
     )
   }
 }
 
+function mapStateToProps(state) {
+  // const selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+  // const selectedItem = state.get('pagesById').get(selectedPageIndex).get('items').find(item=>item.get('id')===state.get('selectedComId'))
+  //
+  // const _selectedItem = selectedItem.toJS()
+  // return {
+  //
+  //   x: _selectedItem.postion[0],
+  //   y: _selectedItem.postion[1],
+  //   width: _selectedItem.dimension[0],
+  //   height: _selectedItem.dimension[1]
+  // };
+  return {
+
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    selectCom: bindActionCreators(actions.selectCom, dispatch),
+    stopDrag: bindActionCreators(actions.stopDrag, dispatch),
+    stopResize: bindActionCreators(actions.stopResize, dispatch)
+  };
+}
+
+Text = connect(mapStateToProps, mapDispatchToProps)(Text)
 export default Text

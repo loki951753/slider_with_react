@@ -1,5 +1,90 @@
-.com-selected
-  outline: solid
-
-.com-item
+.operate
+  display: none
   position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  &.com-selected
+    display: block
+    z-index: -99
+  .l, .r
+    position: absolute
+    height: 100%
+    top: 0
+    border-left: 1px dashed rgb(0, 0, 0)
+    box-sizing: border-box
+  .t, .b
+    position: absolute
+    width: 100%
+    left: 0
+    border-top: 1px dashed rgb(0, 0, 0)
+    box-sizing: border-box
+  .l
+    left: -1px
+  .r
+    right: -1px
+  .t
+    top: -1px
+  .b
+    bottom: -1px
+
+  &.com-selected
+    display: block
+    .border-line
+      &::before
+        left: -1px
+      &::after
+        right: -1px
+      &::before, &::after
+        content: ""
+        position: absolute
+        height: 100%
+        top: 0px
+        border-left: 1px dashed rgb(0, 0, 0)
+    .scale
+      position: absolute
+      border-image-source: initial
+      border-image-slice: initial
+      border-image-width: initial
+      border-image-outset: initial
+      border-image-repeat: initial
+      width: 10px
+      height: 10px
+      z-index: 1
+      background: rgb(255, 255, 255)
+      border-width: 1px
+      border-style: solid
+      border-color: rgb(0, 0, 0)
+      &.scale-e-text
+        width: 10px
+        height: 10px
+        top: 50%
+        right: -7px
+        margin-top: -5px
+        cursor: e-resize
+        border-radius: 50%
+      &.scale-w-text
+        width: 10px
+        height: 10px
+        top: 50%
+        left: -7px
+        margin-top: -5px
+        cursor: w-resize
+        border-radius: 50%
+
+.react-resizable
+  position: relative
+.react-resizable-handle
+  position: absolute
+  width: 20px
+  height: 20px
+  bottom: 0
+  right: 0
+  background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pg08IS0tIEdlbmVyYXRvcjogQWRvYmUgRmlyZXdvcmtzIENTNiwgRXhwb3J0IFNWRyBFeHRlbnNpb24gYnkgQWFyb24gQmVhbGwgKGh0dHA6Ly9maXJld29ya3MuYWJlYWxsLmNvbSkgLiBWZXJzaW9uOiAwLjYuMSAgLS0+DTwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DTxzdmcgaWQ9IlVudGl0bGVkLVBhZ2UlMjAxIiB2aWV3Qm94PSIwIDAgNiA2IiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojZmZmZmZmMDAiIHZlcnNpb249IjEuMSINCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiDQl4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjZweCIgaGVpZ2h0PSI2cHgiDT4NCTxnIG9wYWNpdHk9IjAuMzAyIj4NCQk8cGF0aCBkPSJNIDYgNiBMIDAgNiBMIDAgNC4yIEwgNCA0LjIgTCA0LjIgNC4yIEwgNC4yIDAgTCA2IDAgTCA2IDYgTCA2IDYgWiIgZmlsbD0iIzAwMDAwMCIvPg0JPC9nPg08L3N2Zz4=')
+  background-position: bottom right
+  padding: 0 1px 1px 0
+  background-repeat: no-repeat
+  background-origin: content-box
+  box-sizing: border-box
+  cursor: se-resize
