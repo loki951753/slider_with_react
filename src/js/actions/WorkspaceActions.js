@@ -23,11 +23,42 @@ export function stopDrag(id, x, y) {
 }
 
 export function stopResize(id, width, height) {
-  console.log(`id:${id}, width:${width}, height:${height}`);
   return {
     type: types.STOP_RESIZE,
     id,
     width,
     height
   };
+}
+
+export function changeItemX(id, x){
+  return {
+    type: types.CHANGE_ITEM_X,
+    id,
+    x
+  }
+}
+
+export function changeItemY(id, y){
+  return {
+    type: types.CHANGE_ITEM_Y,
+    id,
+    y
+  }
+}
+
+export function changeItemWidth(id, width){
+  return {
+    type: types.CHANGE_ITEM_WIDTH,
+    id,
+    width
+  }
+}
+
+export function changeItemHeight(id, height){
+  return {
+    type: types.CHANGE_ITEM_HEIGHT,
+    id,
+    height
+  }
 }

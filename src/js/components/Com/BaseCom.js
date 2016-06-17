@@ -13,11 +13,10 @@ class BaseCom extends Component {
   constructor(props){
     super(props)
 
-    const { selectCom, id, isSelected } = props
+    const { selectCom, id } = props
 
     this.id = id
     this.selectCom = selectCom
-    this.isSelected = isSelected
 
     this.state = {
       width: props.width,
@@ -43,6 +42,9 @@ class BaseCom extends Component {
     this.stopResize = stopResize
   }
 
+  componentWillReceiveProps(props){
+    this.setState({width: props.width, height: props.height});
+  }
   handleClick(){
     console.log('click');
     this.selectCom(this.id)
@@ -50,6 +52,11 @@ class BaseCom extends Component {
 
   handleDragStart(){
     if (this.isResizing) {
+      return false
+    }
+
+    if (!this.props.isSelected) {
+      this.handleClick()
       return false
     }
   }
@@ -76,7 +83,6 @@ class BaseCom extends Component {
   }
 
   handleOnResize(event, {element, size}){
-    console.log(size);
     this.setState({width: size.width, height: size.height});
   }
 
@@ -85,13 +91,17 @@ class BaseCom extends Component {
   }
 
   render(){
+    console.log(`id:${this.id}`);
+    console.log(this.props.width);
+    console.log(this.state.width);
     return (
-      <Draggable onStart={this.handleDragStart}
+      <Draggable onClick={this.handleClick}
+                 onStart={this.handleDragStart}
                  onDrag={this.handleOnDrag}
                  onStop={this.handleDragStop}
-                 defaultPosition={{x:this.props.x, y:this.props.y}}
+                 position={{x:this.props.x, y:this.props.y}}
                  >
-        <div className="myDrag"
+        <div className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}
              style={{
                position:'absolute'
              }}
@@ -108,7 +118,7 @@ class BaseCom extends Component {
 
               </div>
           </Resizable>
-          <div className={classnames({"operate":true,'com-selected':this.props.isSelected})}>
+          <div className={classnames({"operate":true})}>
             <div className="t"></div>
             <div className="b"></div>
             <div className="l"></div>

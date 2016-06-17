@@ -70,7 +70,6 @@ class Carousel extends Component {
                   page.get('items').map((item)=>{
                     switch (item.get('type')) {
                       case 'text':
-                        console.log("render a text");
                         return <Com_Text key={item.get('id')}
                                          id={item.get('id')}
                                          style={item.get('style').toJS()}

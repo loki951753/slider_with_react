@@ -35,7 +35,7 @@ const initialState = Immutable.fromJS({
           'backgroundColor':'yellow'
         },
         innerText: 'TeXt1',
-        position: [0, 50],
+        position: [50, 50],
         dimension: [50, 100]
       }
     ]
@@ -58,6 +58,7 @@ const genId = function(state){
 export default function(state = initialState, action){
 
   let selectedPageIndex
+  let selectedPage
   let selectedItemIndex
 
   switch (action.type) {
@@ -127,22 +128,25 @@ export default function(state = initialState, action){
       console.log("i am add text");
       console.log(action);
 
-      const id = genId(state)
+      selectedPage = state.get('pagesById').find(page=>page.get('id')===state.get('selectedPageId'))
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      console.log(selectedPage);
+      const id = selectedPage.get('items').maxBy(item=>item.id).get('id') + 1
+
       const text = {
-        id: id,
-        type: "text",
+        id,
+        index: id,
+        type: 'text',
         style: {
-          "zIndex": `id`,
-          ...action.props.style
+          'backgroundColor':'yellow'
         },
+        innerText: 'new TeXt',
         position: [0, 0],
-        innerText: action.props.innerText
+        dimension: [50, 100]
       }
 
-      return state.insert(['pagesById'], state.get('pagesById')
-                                              .find((item)=>item.get('id')===state)
-                                              .get('items')
-                                              .insert(Immutable.fromJS(text)))
+      return state.setIn(['pagesById', selectedPageIndex, 'items'], selectedPage.get('items').push(Immutable.fromJS(text)))
+                  .setIn(['selectedComId'], id)
 
       // return {
       //   ...state,
@@ -178,8 +182,6 @@ export default function(state = initialState, action){
       break;
 
     case types.STOP_RESIZE:
-      console.log('stop resize');
-
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
       selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
 
@@ -187,6 +189,37 @@ export default function(state = initialState, action){
                               v=>Immutable.List([action.width, action.height]))
       break;
 
+    case types.CHANGE_ITEM_X:
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position', '0'],
+                              action.x)
+      break;
+
+    case types.CHANGE_ITEM_Y:
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position', '1'],
+                              action.y)
+      break;
+
+    case types.CHANGE_ITEM_WIDTH:
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '0'],
+                              action.width)
+      break;
+
+    case types.CHANGE_ITEM_HEIGHT:
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '1'],
+                              action.height)
+      break;
 
     case types.MOVE_COM: {
       console.log("move item");
