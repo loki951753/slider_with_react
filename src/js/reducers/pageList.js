@@ -184,6 +184,7 @@ export default function(state = initialState, action){
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
       selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
 
+      console.log(action);
       return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position'],
                               v=>Immutable.List([action.x, action.y]))
       break;

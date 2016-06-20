@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import * as actions from '../../actions/WorkspaceActions'
 
-import Draggable from 'react-draggable';
+import DraggableCore from 'react-draggable';
 import { Resizable } from 'react-resizable'
 
 import './BaseCom.sass'
@@ -21,17 +21,15 @@ class BaseCom extends Component {
     this.state = {
       width: props.width,
       height: props.height,
-      x: props.x,
-      y: props.y
+      left: props.x,
+      top: props.y
     }
 
     this.isResizing = false
 
     this.handleClick = this.handleClick.bind(this)
 
-    this.handleDragStart = this.handleDragStart.bind(this)
-    this.handleDragStop  = this.handleDragStop.bind(this)
-    this.handleOnDrag  = this.handleOnDrag.bind(this)
+    this.onDragHandler = this.onDragHandler.bind(this)
 
     this.handleResizeStart = this.handleResizeStart.bind(this)
     this.handleResizeStop  = this.handleResizeStop.bind(this)
@@ -50,36 +48,43 @@ class BaseCom extends Component {
     this.selectCom(this.id)
   }
 
-  handleDragStart(){
-    if (this.isResizing) {
-      return false
-    }
+  onDragHandler(handlerName){
+    return (e,{node, deltaX,deltaY})=>{
+      const newPosition = {top:0,left:0}
 
-    if (!this.props.isSelected) {
-      this.handleClick()
-      return false
-    }
-  }
+      switch(handlerName){
+        case 'onDragStart':
+          console.log('drag start');
+          const parentRect = node.offsetParent.getBoundingClientRect();
+          const clientRect = node.getBoundingClientRect();
+          newPosition.left = clientRect.left - parentRect.left;
+          newPosition.top = clientRect.top - parentRect.top;
+          this.setState({dragging: newPosition});
+          break;
+        case 'onDrag':
+          console.log('on drag');
+          if (!this.state.dragging) throw new Error('onDrag called before onDragStart.');
+          newPosition.left = this.state.dragging.left + deltaX;
+          newPosition.top = this.state.dragging.top + deltaY;
+          this.setState({dragging: newPosition});
+          this.setState({top:this.state.top + newPosition.top, left:this.state.left + newPosition.left})
+          break;
+        case 'onDragStop':
+          console.log('drag stop');
+          if (!this.state.dragging) throw new Error('onDragEnd called before onDragStart.');
+          newPosition.left = this.state.dragging.left;
+          newPosition.top = this.state.dragging.top;
+          this.setState({dragging: null});
+          this.stopDrag(this.id, this.state.left, this.state.top)
+          break;
+        default:
 
-  handleOnDrag(){
-    if (this.isResizing) {
-      return false
-    }
-  }
-
-  handleDragStop(e,ui){
-    if (this.isResizing) {
-      this.isResizing = false
-      return false
-    } else {
-      this.stopDrag(this.id, ui.x, ui.y)
-      return true
+      }
     }
   }
 
   handleResizeStart(){
     console.log('resize start');
-    this.isResizing = true
   }
 
   handleOnResize(event, {element, size}){
@@ -92,17 +97,18 @@ class BaseCom extends Component {
 
   render(){
     return (
-      <Draggable onClick={this.handleClick}
-                 onStart={this.handleDragStart}
-                 onDrag={this.handleOnDrag}
-                 onStop={this.handleDragStop}
-                 position={{x:this.props.x, y:this.props.y}}
-                 >
-        <div className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}
-             style={{
-               position:'absolute'
-             }}
-             >
+      <div  className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}
+            style={{left:this.state.left,top:this.state.top,position:'absolute'}}
+            onClick={this.handleClick}
+        >
+        <DraggableCore
+          onStart={this.onDragHandler('onDragStart')}
+          onDrag={this.onDragHandler('onDrag')}
+          onStop={this.onDragHandler('onDragStop')}
+          cancel=".react-resizable-handle"
+          >
+          <div>
+
           <Resizable width={this.state.width}
                     height={this.state.height}
                     onResizeStart={this.handleResizeStart}
@@ -122,7 +128,8 @@ class BaseCom extends Component {
             <div className="r"></div>
           </div>
         </div>
-      </Draggable>
+        </DraggableCore>
+      </div>
     )
   }
 }
