@@ -73,7 +73,7 @@ class Carousel extends Component {
                         return <Com_Text key={item.get('id')}
                                          id={item.get('id')}
                                          style={item.get('style').toJS()}
-                                         innerText={item.get('innerText')}
+                                         content={item.get('content')}
                                          x={item.get('position').get('0')}
                                          y={item.get('position').get('1')}
                                          width={item.get('dimension').get('0')}

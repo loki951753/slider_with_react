@@ -62,3 +62,19 @@ export function changeItemHeight(id, height){
     height
   }
 }
+
+export function changeItemContent(id, content){
+  return {
+    type: types.CHANGE_ITEM_CONTENT,
+    id,
+    content
+  }
+}
+
+export function changeItemAnimation(id, animation){
+  return {
+    type: types.CHANGE_ITEM_ANIMATION,
+    id,
+    animation
+  }
+}

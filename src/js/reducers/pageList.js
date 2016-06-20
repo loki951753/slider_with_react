@@ -18,7 +18,9 @@ const initialState = Immutable.fromJS({
         style: {
           'backgroundColor':'yellow'
         },
+        animation:'',
         innerText: 'TeXt0',
+        content:['text0'],
         position: [0, 0],
         dimension: [50, 100]
       }
@@ -34,7 +36,9 @@ const initialState = Immutable.fromJS({
         style: {
           'backgroundColor':'yellow'
         },
+        animation:'',
         innerText: 'TeXt1',
+        content:['text0', 'text1'],
         position: [50, 50],
         dimension: [50, 100]
       }
@@ -86,7 +90,10 @@ export default function(state = initialState, action){
                   'backgroundColor':'yellow'
                 },
                 innerText: 'TeXt1',
-                position: [0, 50]
+                content:['text'],
+                animation:'',
+                position: [0, 50],
+                dimension: [50, 100]
               }]
             })))
 
@@ -140,7 +147,7 @@ export default function(state = initialState, action){
         style: {
           'backgroundColor':'yellow'
         },
-        innerText: 'new TeXt',
+        content: ['new text'],
         position: [0, 0],
         dimension: [50, 100]
       }
@@ -219,6 +226,23 @@ export default function(state = initialState, action){
 
       return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '1'],
                               action.height)
+      break;
+
+    case types.CHANGE_ITEM_CONTENT:
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'content'],
+                              Immutable.fromJS(action.content))
+      break;
+
+    case types.CHANGE_ITEM_ANIMATION:
+      console.log("change item animation");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'animation'],
+                              Immutable.fromJS(action.animation))
       break;
 
     case types.MOVE_COM: {

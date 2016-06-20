@@ -24,7 +24,9 @@ class Text extends Component {
                stopDrag={this.props.stopDrag}
                stopResize={this.props.stopResize}
       >
-        <span>{this.props.innerText}</span>
+        {
+          this.props.content.toJS().map((contentItem,index)=>(<p key={index}>{contentItem}</p>))
+        }
       </BaseCom>
     )
   }

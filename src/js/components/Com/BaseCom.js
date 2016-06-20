@@ -91,9 +91,6 @@ class BaseCom extends Component {
   }
 
   render(){
-    console.log(`id:${this.id}`);
-    console.log(this.props.width);
-    console.log(this.state.width);
     return (
       <Draggable onClick={this.handleClick}
                  onStart={this.handleDragStart}
