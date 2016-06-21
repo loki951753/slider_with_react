@@ -1,10 +1,13 @@
 import * as types from '../constants/ActionTypes';
+import * as staticValues from '../constants/StaticValues'
 import utils from '../common/utils'
 
 import Immutable from 'immutable'
 import _ from 'lodash'
 
 const initialState = Immutable.fromJS({
+  carouselWidth: staticValues.CAROUSEL_WIDTH,
+  carouselHeight: staticValues.CAROUSEL_HEIGHT,
   pages: [0, 1],
   selectedPageId: 1,
   pagesById: [{
@@ -16,8 +19,10 @@ const initialState = Immutable.fromJS({
         index: 0,
         type: 'text',
         style: {
-          'backgroundColor':'yellow'
+
         },
+        fontSize: 14,
+        fontSizeUnit: 'px',
         animation:'',
         innerText: 'TeXt0',
         content:['text0'],
@@ -34,8 +39,10 @@ const initialState = Immutable.fromJS({
         index: 0,
         type: 'text',
         style: {
-          'backgroundColor':'yellow'
+
         },
+        fontSize: 14,
+        fontSizeUnit: 'px',
         animation:'',
         innerText: 'TeXt1',
         content:['text0', 'text1'],
@@ -96,24 +103,6 @@ export default function(state = initialState, action){
                 dimension: [50, 100]
               }]
             })))
-
-      // return {
-      //   ...state,
-      //   pages: [...state.pages.slice(0, selectedIndex+1),
-      //     newId,
-      //     ...state.pages.slice(selectedIndex + 1)
-      //   ],
-      //   pagesById: [...state.pagesById.slice(0, selectedIndex+1),
-      //     {
-      //       id: newId,
-      //       content: action.content,
-      //       items: []
-      //     },
-      //     ...state.pagesById.slice(selectedIndex + 1)
-      //   ],
-      //   //auto select the new page
-      //   selectedId: newId
-      // }
       break;
     }
     case types.SELECT_PAGE: {
@@ -121,14 +110,6 @@ export default function(state = initialState, action){
 
       return state.set('selectedPageId', action.id)
       .set(['selectedComId'], 0)
-
-      // return {
-      //   ...state,
-      //   selectedId: action.id,
-      //   //set to 0
-      //   //may enhance here someday
-      //   selectedComId: 0
-      // }
     }
 
     case types.ADD_TEXT:{
@@ -145,8 +126,9 @@ export default function(state = initialState, action){
         index: id,
         type: 'text',
         style: {
-          'backgroundColor':'yellow'
         },
+        fontSize: 14,
+        fontSizeUnit: 'px',
         content: ['new text'],
         position: [0, 0],
         dimension: [50, 100]
@@ -154,15 +136,6 @@ export default function(state = initialState, action){
 
       return state.setIn(['pagesById', selectedPageIndex, 'items'], selectedPage.get('items').push(Immutable.fromJS(text)))
                   .setIn(['selectedComId'], id)
-
-      // return {
-      //   ...state,
-      //   pagesById: [
-      //     ...utils.insertText(state.pagesById, state.selectedId, text)
-      //   ],
-      //   selectedCom: id
-      // }
-
       break;
     }
 
@@ -170,11 +143,6 @@ export default function(state = initialState, action){
       console.log("select component");
 
       return state.set('selectedComId', action.id)
-      // return {
-      //   ...state,
-      //   selectedCom: action.id
-      // }
-
       break;
     }
 
@@ -246,6 +214,130 @@ export default function(state = initialState, action){
                               Immutable.fromJS(action.animation))
       break;
 
+    case types.CHANGE_ITEM_POSITION:
+      console.log('change item position');
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      let width,height;
+
+      switch (action.method) {
+        case 'parentCenter':
+          console.log('parent center');
+          width = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '0'])
+          return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position', '0'],
+                                  (staticValues.CAROUSEL_WIDTH - width)/2)
+          break;
+        case 'parentRight':
+          console.log('parent right');
+          width = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '0'])
+          return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position', '0'],
+                                  (staticValues.CAROUSEL_WIDTH - width))
+          break;
+
+        case 'parentCentre':
+          console.log('parent centre');
+          height = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '1'])
+          return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position', '1'],
+                                  (staticValues.CAROUSEL_HEIGHT - height)/2)
+          break;
+
+        case 'parentBottom':
+          console.log('parent bottom');
+          height = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'dimension', '1'])
+          return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position', '1'],
+                                  (staticValues.CAROUSEL_HEIGHT - height))
+          break;
+        default:
+
+      }
+
+    case types.CHANGE_ITEM_FONTSIZE:
+      console.log('change item font size');
+
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'fontSize'],
+                              action.fontSize)
+      break;
+
+    case types.TEXT_ALIGN_LEFT:
+      console.log("text align left");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'textAlign'],
+                            'left')
+      break;
+
+    case types.TEXT_ALIGN_RIGHT:
+      console.log("text align right");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'textAlign'],
+                            'right')
+      break;
+
+    case types.TEXT_ALIGN_CENTER:
+      console.log("text align center");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'textAlign'],
+                            'center')
+      break;
+
+    case types.TEXT_ITALIC:
+      console.log("text italic");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      let isTextItalic = !!state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'fontStyle'])
+
+      if (isTextItalic) {
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'fontStyle'],
+                            '')
+      }else {
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'fontStyle'],
+                            'italic')
+      }
+      break;
+
+    case types.TEXT_UNDERLINED:
+      console.log("text underlined");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      let isTextUnderline = !!state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'textDecoration'])
+
+      if (isTextUnderline) {
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'textDecoration'],
+                              '')
+      } else {
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'textDecoration'],
+                              'underline')
+      }
+      break;
+
+
+    case types.TEXT_BOLD:
+      console.log("text bold");
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+
+      let isTextBold = !!state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'fontWeight'])
+
+      if (isTextBold) {
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'fontWeight'],
+                              '')
+      } else {
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'style', 'fontWeight'],
+                              'bold')
+      }
+      break;
+
     case types.MOVE_COM: {
       console.log("move item");
 
@@ -253,31 +345,6 @@ export default function(state = initialState, action){
       selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
       return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position'],
                               v=>Immutable.List([action.left, action.top]))
-
-      // const currentPage = _.extend({},utils.findPageById(state.pagesById, state.selectedId))
-      // const selectedIndex = state.pages.indexOf(state.selectedId)
-      //
-      // let newPageItems = []
-      // currentPage.items.forEach((com)=>{
-      //   if (com.id === state.selectedCom) {
-      //     com.left = action.left
-      //     com.top = action.top
-      //     newPageItems.push(com)
-      //   }else {
-      //     newPageItems.push(com)
-      //   }
-      // })
-      //
-      // currentPage.items = newPageItems
-      //
-      // return {
-      //   ...state,
-      //   pagesById: [...state.pagesById.slice(0, selectedIndex),
-      //     currentPage,
-      //     ...state.pagesById.slice(selectedIndex + 1)
-      //   ]
-      // }
-
 
     }
     default:

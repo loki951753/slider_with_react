@@ -78,3 +78,61 @@ export function changeItemAnimation(id, animation){
     animation
   }
 }
+
+export function textAlignLeft(id){
+  return {
+    type: types.TEXT_ALIGN_LEFT,
+    id
+  }
+}
+
+export function textAlignCenter(id){
+  return {
+    type: types.TEXT_ALIGN_CENTER,
+    id
+  }
+}
+
+export function textAlignRight(id){
+  return {
+    type: types.TEXT_ALIGN_RIGHT,
+    id
+  }
+}
+
+export function textItalic(id){
+  return {
+    type: types.TEXT_ITALIC,
+    id
+  }
+}
+
+export function textBold(id){
+  return {
+    type: types.TEXT_BOLD,
+    id
+  }
+}
+
+export function textUnderlined(id){
+  return {
+    type: types.TEXT_UNDERLINED,
+    id
+  }
+}
+
+export function changeItemPosition(id, method){
+  return {
+    type: types.CHANGE_ITEM_POSITION,
+    id,
+    method
+  }
+}
+
+export function changeItemFontSize(id, fontSize){
+  return {
+    type: types.CHANGE_ITEM_FONTSIZE,
+    id,
+    fontSize
+  }
+}

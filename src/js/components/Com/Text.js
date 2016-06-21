@@ -9,6 +9,7 @@ import BaseCom from './BaseCom'
 class Text extends Component {
   constructor(props){
     super(props)
+    console.log(props);
   }
   render(){
     return (
@@ -24,9 +25,11 @@ class Text extends Component {
                stopDrag={this.props.stopDrag}
                stopResize={this.props.stopResize}
       >
-        {
-          this.props.content.toJS().map((contentItem,index)=>(<p key={index}>{contentItem}</p>))
-        }
+        <div style={{...this.props.style, fontSize:`${this.props.fontSize}${this.props.fontSizeUnit}`}}>
+          {
+            this.props.content.toJS().map((contentItem,index)=>(<p key={index}>{contentItem}</p>))
+          }
+        </div>
       </BaseCom>
     )
   }

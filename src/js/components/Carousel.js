@@ -20,8 +20,6 @@ import Com_Text from './Com/Text'
 import './Carousel.sass'
 
 const style = {
-  'width': 320,
-  'height': 480,
   'backgroundColor': '#fff'
 }
 
@@ -55,13 +53,13 @@ class Carousel extends Component {
   }
 
   render(){
-    const { pagesById, selectedPageId, selectedComId } = this.props;
+    const { pagesById, selectedPageId, selectedComId, carouselWidth, carouselHeight } = this.props;
 
     // const pageData = utils.findPageById(pagesById, selectedId)
     const pageData = pagesById.find(page=>page.get('id')===selectedPageId)
 
     return (
-      <div id="swiperContainer" className="swiper-container" style={style}>
+      <div id="swiperContainer" className="swiper-container" style={{...style, width:carouselWidth, height:carouselHeight}}>
         <div className="swiper-wrapper">
           {
             pagesById.map((page)=>(
@@ -73,6 +71,8 @@ class Carousel extends Component {
                         return <Com_Text key={item.get('id')}
                                          id={item.get('id')}
                                          style={item.get('style').toJS()}
+                                         fontSize={item.get('fontSize')}
+                                         fontSizeUnit={item.get('fontSizeUnit')}
                                          content={item.get('content')}
                                          x={item.get('position').get('0')}
                                          y={item.get('position').get('1')}
@@ -101,7 +101,10 @@ function mapStateToProps(state) {
   return {
     selectedPageId: state.pageList.get('selectedPageId'),
     pagesById: state.pageList.get('pagesById'),
-    selectedComId: state.pageList.get('selectedComId')
+    selectedComId: state.pageList.get('selectedComId'),
+
+    carouselWidth: state.pageList.get('carouselWidth'),
+    carouselHeight: state.pageList.get('carouselHeight')
   };
 }
 

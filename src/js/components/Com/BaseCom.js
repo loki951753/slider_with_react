@@ -41,7 +41,7 @@ class BaseCom extends Component {
   }
 
   componentWillReceiveProps(props){
-    this.setState({width: props.width, height: props.height});
+    this.setState({width: props.width, height: props.height, left: props.x, top: props.y});
   }
   handleClick(){
     console.log('click');

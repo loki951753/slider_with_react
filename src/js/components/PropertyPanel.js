@@ -13,6 +13,7 @@ import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem'
 import Subheader from 'material-ui/Subheader'
 import Slider from 'material-ui/Slider';
+import IconButton from 'material-ui/IconButton';
 
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
@@ -26,6 +27,7 @@ class PropertyPanel extends Component {
     this.afterWheel =false
     this.onWheel = this.onWheel.bind(this)
     this.onChange = this.onChange.bind(this)
+    this.handleClick = this.handleClick.bind(this)
 
     this.handleTouchTap = this.handleTouchTap.bind(this)
 
@@ -56,8 +58,32 @@ class PropertyPanel extends Component {
         console.log('change speed');
         console.log(value);
         break;
+      case 'property-panel-change-fontSize':
+        console.log('change font size');
+        this.props.changeItemFontSize(comId, parseInt(value))
+        break;
+      case 'parentLeft':
+        this.props.changeItemX(comId, 0)
+        break;
+      case 'parentTop':
+        this.props.changeItemY(comId, 0)
+        break;
+      case 'textAlignLeft':
+      case 'textAlignCenter':
+      case 'textAlignRight':
+      case 'textItalic':
+      case 'textBold':
+      case 'textUnderlined':
+        this.props[selector](comId)
+        break;
+      case 'parentCenter':
+      case 'parentRight':
+      case 'parentCentre':
+      case 'parentBottom':
+        console.log('change to parent left');
+        this.props.changeItemPosition(comId, selector)
+        break;
       default:
-
     }
   }
 
@@ -112,6 +138,13 @@ class PropertyPanel extends Component {
     this.setState({'latencySlider':value})
   }
 
+  handleClick(btnId){
+    return (e)=>{
+      this.changeItem(btnId, this.id)
+    }
+
+  }
+
   render(){
     const {selectedComId, selectedPageId, pagesById} = this.props
     this.id = selectedComId
@@ -120,6 +153,11 @@ class PropertyPanel extends Component {
                                 .get('items')
                                 .find(item=> item.get('id') === selectedComId)
                                 .toJS()
+
+
+    const iconStyle = {
+      marginRight: 24
+    }
     return (
       <Tabs className="property-panel"
         >
@@ -132,6 +170,7 @@ class PropertyPanel extends Component {
                      onChange={this.onChange}
                      ref={(node=>this._inputX = node)}
                      className="property-panel-textfield"
+                     style={{width:'20%',display:"inline-block"}}
             />
           <TextField id="property-panel-change-y"
                      value={selectedCom.position[1]}
@@ -141,6 +180,7 @@ class PropertyPanel extends Component {
                      onChange={this.onChange}
                      ref={(node=>this._inputY = node)}
                      className="property-panel-textfield"
+                     style={{width:'20%',display:"inline-block"}}
             />
           <TextField id="property-panel-change-width"
                      value={selectedCom.dimension[0]}
@@ -149,6 +189,7 @@ class PropertyPanel extends Component {
                      onWheel={this.onWheel}
                      onChange={this.onChange}
                      ref={(node=>this._inputWidth = node)}
+                     style={{width:'20%',display:"inline-block"}}
                      className="property-panel-textfield"
             />
           <TextField id="property-panel-change-height"
@@ -158,8 +199,122 @@ class PropertyPanel extends Component {
                      onWheel={this.onWheel}
                      onChange={this.onChange}
                      ref={(node=>this._inputHeight = node)}
+                     style={{width:'20%',display:"inline-block"}}
                      className="property-panel-textfield"
             />
+
+          <TextField id="property-panel-change-fontSize"
+                     value={selectedCom.fontSize}
+                     floatingLabelText="font size"
+                     type="number"
+                     onWheel={this.onWheel}
+                     onChange={this.onChange}
+                     className="property-panel-textfield"
+            />
+
+          <div className="icon-iconfont-container-group">
+            <IconButton
+              id="parentLeft"
+              iconClassName="icon-iconfont-container-left"
+              tooltip="parent left"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('parentLeft')}
+              />
+
+            <IconButton
+              id="parentCenter"
+              iconClassName="icon-iconfont-container-center"
+              tooltip="parent center"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('parentCenter')}
+              />
+            <IconButton
+              id="parentRight"
+              iconClassName="icon-iconfont-container-right"
+              tooltip="parent right"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('parentRight')}
+              />
+            <IconButton
+              id="parentTop"
+              iconClassName="icon-iconfont-container-top"
+              tooltip="parent top"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('parentTop')}
+              />
+            <IconButton
+              id="parentCentre"
+              iconClassName="icon-iconfont-container-centre"
+              tooltip="parent centre"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('parentCentre')}
+              />
+            <IconButton
+              id="parentBottom"
+              iconClassName="icon-iconfont-container-bottom"
+              tooltip="parent bottom"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('parentBottom')}
+              />
+          </div>
+
+          <div>
+            <IconButton
+              id="textAlignLeft"
+              iconClassName="material-icons"
+              tooltip="text align left"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('textAlignLeft')}
+              >
+                format_align_left
+            </IconButton>
+            <IconButton
+              id="textAlignCenter"
+              iconClassName="material-icons"
+              tooltip="text align center"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('textAlignCenter')}
+              >
+                format_align_center
+            </IconButton>
+            <IconButton
+              id="textAlignRight"
+              iconClassName="material-icons"
+              tooltip="text align right"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('textAlignRight')}
+              >
+                format_align_right
+            </IconButton>
+            <IconButton
+              id="textItalic"
+              iconClassName="material-icons"
+              tooltip="italic"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('textItalic')}
+              >
+                format_italic
+            </IconButton>
+            <IconButton
+              id="textBold"
+              iconClassName="material-icons"
+              tooltip="bold"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('textBold')}
+              >
+                format_bold
+            </IconButton>
+            <IconButton
+              id="textUnderlined"
+              iconClassName="material-icons"
+              tooltip="underlined"
+              tooltipPosition="top-center"
+              onClick={this.handleClick('textUnderlined')}
+              >
+                format_underlined
+              </IconButton>
+          </div>
+
           <TextField id="property-panel-change-content"
                      hintText="文本内容"
                      floatingLabelText="文本内容"
@@ -230,6 +385,17 @@ function mapDispatchToProps(dispatch) {
     , changeItemHeight: bindActionCreators(actions.changeItemHeight, dispatch)
     , changeItemContent: bindActionCreators(actions.changeItemContent, dispatch)
     , changeItemAnimation: bindActionCreators(actions.changeItemAnimation, dispatch)
+
+    , changeItemPosition: bindActionCreators(actions.changeItemPosition, dispatch)
+
+    , changeItemFontSize: bindActionCreators(actions.changeItemFontSize, dispatch)
+    , textAlignLeft: bindActionCreators(actions.textAlignLeft, dispatch)
+    , textAlignCenter: bindActionCreators(actions.textAlignCenter, dispatch)
+    , textAlignRight: bindActionCreators(actions.textAlignRight, dispatch)
+    , textBold: bindActionCreators(actions.textBold, dispatch)
+    , textItalic: bindActionCreators(actions.textItalic, dispatch)
+    , textUnderlined: bindActionCreators(actions.textUnderlined, dispatch)
+
   };
 }
 
