@@ -1,4 +1,3 @@
-import '../styles/bootstrap.min.css';
 import '../styles/styles.sass';
 
 import React from 'react';
@@ -17,11 +16,12 @@ let ComponentEl;
 if (process.env.NODE_ENV !== 'production') {
   const DevTools = require('./containers/DevTools').default;
 
+
+//<DevTools></DevTools>
   // If using routes
   ComponentEl = (
     <div>
       <Router history={browserHistory} routes={routes} />
-      <DevTools />
     </div>
   );
 } else {

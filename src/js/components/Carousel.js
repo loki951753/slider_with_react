@@ -6,14 +6,16 @@ import { connect } from 'react-redux'
 import { bindActionCreators, compose } from 'redux';
 
 import { DropTarget } from 'react-dnd';
-import ItemTypes from './Com/ItemTypes'
 
 import classnames from 'classnames';
 
 import * as actions from '../actions/PageListActions.js'
+import * as comTypes from '../constants/ComTypes.js'
+
 import utils from '../common/utils'
 
 import Com_Text from './Com/Text'
+import Com_Image from './Com/Image'
 
 // require("imports?this=>window!../vendor/swiper.js")
 // import '../vendor/swiper.css'
@@ -67,9 +69,10 @@ class Carousel extends Component {
                 {
                   page.get('items').map((item)=>{
                     switch (item.get('type')) {
-                      case 'text':
+                      case comTypes.TEXT:
                         return <Com_Text key={item.get('id')}
                                          id={item.get('id')}
+                                         index={item.get('index')}
                                          style={item.get('style').toJS()}
                                          fontSize={item.get('fontSize')}
                                          fontSizeUnit={item.get('fontSizeUnit')}
@@ -80,6 +83,23 @@ class Carousel extends Component {
                                          height={item.get('dimension').get('1')}
                                          isSelected={selectedComId === item.get('id')}
                                />
+                        break;
+                      case comTypes.IMAGE:
+                        return <Com_Image
+                                  key={item.get('id')}
+                                  id={item.get('id')}
+                                  index={item.get('index')}
+                                  x={item.get('position').get('0')}
+                                  y={item.get('position').get('1')}
+                                  width={item.get('dimension').get('0')}
+                                  height={item.get('dimension').get('1')}
+                                  isSelected={selectedComId === item.get('id')}
+                                  opacity={item.get('opacity')}
+                                  radius={item.get('radius')}
+                                  shadow={item.get('shadow')}
+                                  rotate={item.get('rotate')}
+                                  src={item.get('src')}
+                          />
                         break;
                       default:
                         return null

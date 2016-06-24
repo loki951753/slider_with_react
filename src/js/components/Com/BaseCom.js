@@ -96,9 +96,15 @@ class BaseCom extends Component {
   }
 
   render(){
+    console.log(`index:${this.props.index}`);
     return (
       <div  className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}
-            style={{left:this.state.left,top:this.state.top,position:'absolute'}}
+            style={{
+              left:this.state.left
+              , top:this.state.top
+              , position:'absolute'
+              , zIndex: this.props.index
+            }}
             onClick={this.handleClick}
         >
         <DraggableCore

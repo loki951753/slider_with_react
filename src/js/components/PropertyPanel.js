@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import * as actions from '../actions/WorkspaceActions.js'
 
+import * as comTypes from '../constants/ComTypes.js'
+
 import {Tabs, Tab} from 'material-ui/Tabs';
 import TextField from 'material-ui/TextField'
 import Avatar from 'material-ui/Avatar';
@@ -14,6 +16,7 @@ import ListItem from 'material-ui/List/ListItem'
 import Subheader from 'material-ui/Subheader'
 import Slider from 'material-ui/Slider';
 import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton'
 
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
@@ -30,6 +33,8 @@ class PropertyPanel extends Component {
     this.handleClick = this.handleClick.bind(this)
 
     this.handleTouchTap = this.handleTouchTap.bind(this)
+
+    this.onRadiusSliderChange = this.onRadiusSliderChange.bind(this)
 
     this.state = {
       speedSlider: 1,
@@ -138,11 +143,26 @@ class PropertyPanel extends Component {
     this.setState({'latencySlider':value})
   }
 
+  onOpacitySliderChange(e, value){
+    this.props.changeItemOpacity(this.id, value)
+  }
+
+  onRadiusSliderChange(e, value){
+    this.props.changeItemRadius(this.id, value)
+  }
+
+  onShadowSliderChange(e, value){
+    this.props.changeItemShadow(this.id, value)
+  }
+
+  onRotateSliderChange(e, value){
+    this.props.changeItemRotate(this.id, value)
+  }
+
   handleClick(btnId){
     return (e)=>{
       this.changeItem(btnId, this.id)
     }
-
   }
 
   render(){
@@ -154,218 +174,428 @@ class PropertyPanel extends Component {
                                 .find(item=> item.get('id') === selectedComId)
                                 .toJS()
 
+    const {opacity, radius, shadow, rotate} = selectedCom
 
     const iconStyle = {
       marginRight: 24
     }
-    return (
-      <Tabs className="property-panel"
-        >
-        <Tab label="property" value="property">
-          <TextField id="property-panel-change-x"
-                     value={selectedCom.position[0]}
-                     floatingLabelText="X"
-                     type="number"
-                     onWheel={this.onWheel}
-                     onChange={this.onChange}
-                     ref={(node=>this._inputX = node)}
-                     className="property-panel-textfield"
-                     style={{width:'20%',display:"inline-block"}}
-            />
-          <TextField id="property-panel-change-y"
-                     value={selectedCom.position[1]}
-                     floatingLabelText="Y"
-                     type="number"
-                     onWheel={this.onWheel}
-                     onChange={this.onChange}
-                     ref={(node=>this._inputY = node)}
-                     className="property-panel-textfield"
-                     style={{width:'20%',display:"inline-block"}}
-            />
-          <TextField id="property-panel-change-width"
-                     value={selectedCom.dimension[0]}
-                     floatingLabelText="width"
-                     type="number"
-                     onWheel={this.onWheel}
-                     onChange={this.onChange}
-                     ref={(node=>this._inputWidth = node)}
-                     style={{width:'20%',display:"inline-block"}}
-                     className="property-panel-textfield"
-            />
-          <TextField id="property-panel-change-height"
-                     value={selectedCom.dimension[1]}
-                     floatingLabelText="height"
-                     type="number"
-                     onWheel={this.onWheel}
-                     onChange={this.onChange}
-                     ref={(node=>this._inputHeight = node)}
-                     style={{width:'20%',display:"inline-block"}}
-                     className="property-panel-textfield"
-            />
 
-          <TextField id="property-panel-change-fontSize"
-                     value={selectedCom.fontSize}
-                     floatingLabelText="font size"
-                     type="number"
-                     onWheel={this.onWheel}
-                     onChange={this.onChange}
-                     className="property-panel-textfield"
-            />
+    console.log("property switch to: " + selectedCom.type);
+    switch (selectedCom.type) {
+      case comTypes.TEXT:
 
-          <div className="icon-iconfont-container-group">
-            <IconButton
-              id="parentLeft"
-              iconClassName="icon-iconfont-container-left"
-              tooltip="parent left"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('parentLeft')}
-              />
+        return (
+          <Tabs className="property-panel"
+            >
+            <Tab label="property" value="property">
+              <TextField id="property-panel-change-x"
+                         value={selectedCom.position[0]}
+                         floatingLabelText="X"
+                         type="number"
+                         onWheel={this.onWheel}
+                         onChange={this.onChange}
+                         ref={(node=>this._inputX = node)}
+                         className="property-panel-textfield"
+                         style={{width:'20%',display:"inline-block"}}
+                />
+              <TextField id="property-panel-change-y"
+                         value={selectedCom.position[1]}
+                         floatingLabelText="Y"
+                         type="number"
+                         onWheel={this.onWheel}
+                         onChange={this.onChange}
+                         ref={(node=>this._inputY = node)}
+                         className="property-panel-textfield"
+                         style={{width:'20%',display:"inline-block"}}
+                />
+              <TextField id="property-panel-change-width"
+                         value={selectedCom.dimension[0]}
+                         floatingLabelText="width"
+                         type="number"
+                         onWheel={this.onWheel}
+                         onChange={this.onChange}
+                         ref={(node=>this._inputWidth = node)}
+                         style={{width:'20%',display:"inline-block"}}
+                         className="property-panel-textfield"
+                />
+              <TextField id="property-panel-change-height"
+                         value={selectedCom.dimension[1]}
+                         floatingLabelText="height"
+                         type="number"
+                         onWheel={this.onWheel}
+                         onChange={this.onChange}
+                         ref={(node=>this._inputHeight = node)}
+                         style={{width:'20%',display:"inline-block"}}
+                         className="property-panel-textfield"
+                />
 
-            <IconButton
-              id="parentCenter"
-              iconClassName="icon-iconfont-container-center"
-              tooltip="parent center"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('parentCenter')}
-              />
-            <IconButton
-              id="parentRight"
-              iconClassName="icon-iconfont-container-right"
-              tooltip="parent right"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('parentRight')}
-              />
-            <IconButton
-              id="parentTop"
-              iconClassName="icon-iconfont-container-top"
-              tooltip="parent top"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('parentTop')}
-              />
-            <IconButton
-              id="parentCentre"
-              iconClassName="icon-iconfont-container-centre"
-              tooltip="parent centre"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('parentCentre')}
-              />
-            <IconButton
-              id="parentBottom"
-              iconClassName="icon-iconfont-container-bottom"
-              tooltip="parent bottom"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('parentBottom')}
-              />
-          </div>
+              <TextField id="property-panel-change-fontSize"
+                         value={selectedCom.fontSize}
+                         floatingLabelText="font size"
+                         type="number"
+                         onWheel={this.onWheel}
+                         onChange={this.onChange}
+                         className="property-panel-textfield"
+                />
 
-          <div>
-            <IconButton
-              id="textAlignLeft"
-              iconClassName="material-icons"
-              tooltip="text align left"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('textAlignLeft')}
-              >
-                format_align_left
-            </IconButton>
-            <IconButton
-              id="textAlignCenter"
-              iconClassName="material-icons"
-              tooltip="text align center"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('textAlignCenter')}
-              >
-                format_align_center
-            </IconButton>
-            <IconButton
-              id="textAlignRight"
-              iconClassName="material-icons"
-              tooltip="text align right"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('textAlignRight')}
-              >
-                format_align_right
-            </IconButton>
-            <IconButton
-              id="textItalic"
-              iconClassName="material-icons"
-              tooltip="italic"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('textItalic')}
-              >
-                format_italic
-            </IconButton>
-            <IconButton
-              id="textBold"
-              iconClassName="material-icons"
-              tooltip="bold"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('textBold')}
-              >
-                format_bold
-            </IconButton>
-            <IconButton
-              id="textUnderlined"
-              iconClassName="material-icons"
-              tooltip="underlined"
-              tooltipPosition="top-center"
-              onClick={this.handleClick('textUnderlined')}
-              >
-                format_underlined
-              </IconButton>
-          </div>
+              <div className="icon-iconfont-container-group">
+                <IconButton
+                  id="parentLeft"
+                  iconClassName="icon-iconfont-container-left"
+                  tooltip="parent left"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('parentLeft')}
+                  />
 
-          <TextField id="property-panel-change-content"
-                     hintText="文本内容"
-                     floatingLabelText="文本内容"
-                     multiLine={true}
-                     rows={selectedCom.content.length}
-                     ref={(node=>this._inputContent = node)}
-                     value={selectedCom.content.join("\n")}
-                     className="property-panel-textfield"
-                     onChange={this.onChange}
-            />
-        </Tab>
-        <Tab label="action" value="action">
-          <Slider id="property-panel-change-speed"
-                  defaultValue={1}
-                  description={`speed: ${this.state.speedSlider}s`}
-                  style={{margin:20,marginTop:0}}
-                  min={0}
-                  max={10}
-                  step={0.5}
-                  name="speed"
-                  value={this.state.speedSlider}
-                  onChange={this.onSpeedSliderChange.bind(this)}
-            />
+                <IconButton
+                  id="parentCenter"
+                  iconClassName="icon-iconfont-container-center"
+                  tooltip="parent center"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('parentCenter')}
+                  />
+                <IconButton
+                  id="parentRight"
+                  iconClassName="icon-iconfont-container-right"
+                  tooltip="parent right"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('parentRight')}
+                  />
+                <IconButton
+                  id="parentTop"
+                  iconClassName="icon-iconfont-container-top"
+                  tooltip="parent top"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('parentTop')}
+                  />
+                <IconButton
+                  id="parentCentre"
+                  iconClassName="icon-iconfont-container-centre"
+                  tooltip="parent centre"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('parentCentre')}
+                  />
+                <IconButton
+                  id="parentBottom"
+                  iconClassName="icon-iconfont-container-bottom"
+                  tooltip="parent bottom"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('parentBottom')}
+                  />
+              </div>
 
-          <Slider id="property-panel-change-latency"
-                  defaultValue={0.6}
-                  description={`latency:${this.state.latencySlider}s`}
-                  style={{margin:20,marginTop:0}}
-                  min={0}
-                  max={10}
-                  step={0.5}
-                  name="latency"
-                  value={this.state.latencySlider}
-                  onChange={this.onLatencySliderChange.bind(this)}
-            />
+              <div>
+                <IconButton
+                  id="textAlignLeft"
+                  iconClassName="material-icons"
+                  tooltip="text align left"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('textAlignLeft')}
+                  >
+                    format_align_left
+                </IconButton>
+                <IconButton
+                  id="textAlignCenter"
+                  iconClassName="material-icons"
+                  tooltip="text align center"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('textAlignCenter')}
+                  >
+                    format_align_center
+                </IconButton>
+                <IconButton
+                  id="textAlignRight"
+                  iconClassName="material-icons"
+                  tooltip="text align right"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('textAlignRight')}
+                  >
+                    format_align_right
+                </IconButton>
+                <IconButton
+                  id="textItalic"
+                  iconClassName="material-icons"
+                  tooltip="italic"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('textItalic')}
+                  >
+                    format_italic
+                </IconButton>
+                <IconButton
+                  id="textBold"
+                  iconClassName="material-icons"
+                  tooltip="bold"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('textBold')}
+                  >
+                    format_bold
+                </IconButton>
+                <IconButton
+                  id="textUnderlined"
+                  iconClassName="material-icons"
+                  tooltip="underlined"
+                  tooltipPosition="top-center"
+                  onClick={this.handleClick('textUnderlined')}
+                  >
+                    format_underlined
+                  </IconButton>
+              </div>
 
-          <List>
-            <Subheader>Attention Seekers</Subheader>
-              {
-                ["bounce", "flash", "pulse", "rubberBand", "shake", "swing", "tada", "wobble"].map(ele=>(
-                  <ListItem
-                      key={ele}
-                      primaryText={ele}
-                      onTouchTap={this.handleTouchTap}
+              <TextField id="property-panel-change-content"
+                         hintText="文本内容"
+                         floatingLabelText="文本内容"
+                         multiLine={true}
+                         rows={selectedCom.content.length}
+                         ref={(node=>this._inputContent = node)}
+                         value={selectedCom.content.join("\n")}
+                         className="property-panel-textfield"
+                         onChange={this.onChange}
+                />
+
+              <RaisedButton label="Delete" secondary={true} onClick={()=>(this.props.deleteCom())} />
+
+            </Tab>
+            <Tab label="action" value="action">
+              <Slider id="property-panel-change-speed"
+                      defaultValue={1}
+                      description={`speed: ${this.state.speedSlider}s`}
+                      style={{margin:20,marginTop:0}}
+                      min={0}
+                      max={10}
+                      step={0.5}
+                      name="speed"
+                      value={this.state.speedSlider}
+                      onChange={this.onSpeedSliderChange.bind(this)}
+                />
+
+              <Slider id="property-panel-change-latency"
+                      defaultValue={0.6}
+                      description={`latency:${this.state.latencySlider}s`}
+                      style={{margin:20,marginTop:0}}
+                      min={0}
+                      max={10}
+                      step={0.5}
+                      name="latency"
+                      value={this.state.latencySlider}
+                      onChange={this.onLatencySliderChange.bind(this)}
+                />
+
+              <List>
+                <Subheader>Attention Seekers</Subheader>
+                  {
+                    ["bounce", "flash", "pulse", "rubberBand", "shake", "swing", "tada", "wobble"].map(ele=>(
+                      <ListItem
+                          key={ele}
+                          primaryText={ele}
+                          onTouchTap={this.handleTouchTap}
+                        />
+                    ))
+                  }
+              </List>
+            </Tab>
+          </Tabs>
+        )
+        break;
+
+        case comTypes.IMAGE:
+          return (
+            <Tabs className="property-panel">
+              <Tab label="property" value="property">
+                <TextField id="property-panel-change-x"
+                           value={selectedCom.position[0]}
+                           floatingLabelText="X"
+                           type="number"
+                           onWheel={this.onWheel}
+                           onChange={this.onChange}
+                           ref={(node=>this._inputX = node)}
+                           className="property-panel-textfield"
+                           style={{width:'20%',display:"inline-block"}}
+                  />
+                <TextField id="property-panel-change-y"
+                           value={selectedCom.position[1]}
+                           floatingLabelText="Y"
+                           type="number"
+                           onWheel={this.onWheel}
+                           onChange={this.onChange}
+                           ref={(node=>this._inputY = node)}
+                           className="property-panel-textfield"
+                           style={{width:'20%',display:"inline-block"}}
+                  />
+                <TextField id="property-panel-change-width"
+                           value={selectedCom.dimension[0]}
+                           floatingLabelText="width"
+                           type="number"
+                           onWheel={this.onWheel}
+                           onChange={this.onChange}
+                           ref={(node=>this._inputWidth = node)}
+                           style={{width:'20%',display:"inline-block"}}
+                           className="property-panel-textfield"
+                  />
+                <TextField id="property-panel-change-height"
+                           value={selectedCom.dimension[1]}
+                           floatingLabelText="height"
+                           type="number"
+                           onWheel={this.onWheel}
+                           onChange={this.onChange}
+                           ref={(node=>this._inputHeight = node)}
+                           style={{width:'20%',display:"inline-block"}}
+                           className="property-panel-textfield"
+                  />
+
+                <div className="icon-iconfont-container-group">
+                  <IconButton
+                    id="parentLeft"
+                    iconClassName="icon-iconfont-container-left"
+                    tooltip="parent left"
+                    tooltipPosition="top-center"
+                    onClick={this.handleClick('parentLeft')}
                     />
-                ))
-              }
-          </List>
-        </Tab>
-      </Tabs>
-    )
+
+                  <IconButton
+                    id="parentCenter"
+                    iconClassName="icon-iconfont-container-center"
+                    tooltip="parent center"
+                    tooltipPosition="top-center"
+                    onClick={this.handleClick('parentCenter')}
+                    />
+                  <IconButton
+                    id="parentRight"
+                    iconClassName="icon-iconfont-container-right"
+                    tooltip="parent right"
+                    tooltipPosition="top-center"
+                    onClick={this.handleClick('parentRight')}
+                    />
+                  <IconButton
+                    id="parentTop"
+                    iconClassName="icon-iconfont-container-top"
+                    tooltip="parent top"
+                    tooltipPosition="top-center"
+                    onClick={this.handleClick('parentTop')}
+                    />
+                  <IconButton
+                    id="parentCentre"
+                    iconClassName="icon-iconfont-container-centre"
+                    tooltip="parent centre"
+                    tooltipPosition="top-center"
+                    onClick={this.handleClick('parentCentre')}
+                    />
+                  <IconButton
+                    id="parentBottom"
+                    iconClassName="icon-iconfont-container-bottom"
+                    tooltip="parent bottom"
+                    tooltipPosition="top-center"
+                    onClick={this.handleClick('parentBottom')}
+                    />
+                </div>
+
+                <Slider id="property-panel-change-opacity"
+                        defaultValue={0}
+                        description={`opacity: ${opacity}%`}
+                        style={{margin:20,marginTop:0,height:40}}
+                        min={0}
+                        max={100}
+                        step={10}
+                        name="opacity"
+                        value={opacity}
+                        onChange={this.onOpacitySliderChange.bind(this)}
+                  />
+
+                <Slider id="property-panel-change-radius"
+                        defaultValue={0}
+                        description={`radius: ${radius}%`}
+                        style={{margin:20,marginTop:0,height:40}}
+                        min={0}
+                        max={100}
+                        step={1}
+                        name="raidus"
+                        value={radius}
+                        onChange={this.onRadiusSliderChange.bind(this)}
+                  />
+
+                <Slider id="property-panel-change-shadow"
+                        defaultValue={0}
+                        description={`shadow: ${shadow}px`}
+                        style={{margin:20,marginTop:0,height:40}}
+                        min={0}
+                        max={100}
+                        step={1}
+                        name="shadow"
+                        value={shadow}
+                        onChange={this.onShadowSliderChange.bind(this)}
+                  />
+
+                <Slider id="property-panel-change-rotate"
+                        defaultValue={0}
+                        description={`rotate: ${rotate}deg`}
+                        style={{margin:20,marginTop:0,height:40}}
+                        min={0}
+                        max={360}
+                        step={5}
+                        name="rotate"
+                        value={rotate}
+                        onChange={this.onRotateSliderChange.bind(this)}
+                  />
+
+                <div style={{marginBottom:10}}>
+                  <RaisedButton label="add index" primary={true} onClick={()=>(this.props.addComIndex())} />
+                  <RaisedButton label="minus index" primary={true} onClick={()=>(this.props.minusComIndex())} />
+                </div>
+
+
+                <RaisedButton label="Delete" secondary={true} onClick={()=>(this.props.deleteCom())} />
+
+              </Tab>
+              <Tab label="action" value="action">
+                <Slider id="property-panel-change-speed"
+                        defaultValue={1}
+                        description={`speed: ${this.state.speedSlider}s`}
+                        style={{margin:20,marginTop:0}}
+                        min={0}
+                        max={10}
+                        step={0.5}
+                        name="speed"
+                        value={this.state.speedSlider}
+                        onChange={this.onSpeedSliderChange.bind(this)}
+                  />
+
+                <Slider id="property-panel-change-latency"
+                        defaultValue={0.6}
+                        description={`latency:${this.state.latencySlider}s`}
+                        style={{margin:20,marginTop:0}}
+                        min={0}
+                        max={10}
+                        step={0.5}
+                        name="latency"
+                        value={this.state.latencySlider}
+                        onChange={this.onLatencySliderChange.bind(this)}
+                  />
+
+                <List>
+                  <Subheader>Attention Seekers</Subheader>
+                    {
+                      ["bounce", "flash", "pulse", "rubberBand", "shake", "swing", "tada", "wobble"].map(ele=>(
+                        <ListItem
+                            key={ele}
+                            primaryText={ele}
+                            onTouchTap={this.handleTouchTap}
+                          />
+                      ))
+                    }
+                </List>
+              </Tab>
+            </Tabs>
+          )
+          break;
+
+        case comTypes.BACKGROUND:
+          return (
+            <Tabs className="property-panel">
+              <Tab label="background" value="property"></Tab>
+            </Tabs>
+          )
+        default:
+
+      }
   }
 }
 
@@ -396,6 +626,15 @@ function mapDispatchToProps(dispatch) {
     , textItalic: bindActionCreators(actions.textItalic, dispatch)
     , textUnderlined: bindActionCreators(actions.textUnderlined, dispatch)
 
+    , changeItemOpacity: bindActionCreators(actions.changeItemOpacity, dispatch)
+    , changeItemRotate: bindActionCreators(actions.changeItemRotate, dispatch)
+    , changeItemRadius: bindActionCreators(actions.changeItemRadius, dispatch)
+    , changeItemShadow: bindActionCreators(actions.changeItemShadow, dispatch)
+
+
+    , deleteCom: bindActionCreators(actions.deleteCom, dispatch)
+    , addComIndex: bindActionCreators(actions.addComIndex, dispatch)
+    , minusComIndex: bindActionCreators(actions.minusComIndex, dispatch)
   };
 }
 

@@ -3,7 +3,6 @@ import { Route, IndexRoute, Redirect, Link } from 'react-router';
 
 import App from './components/App';
 import SliderMaker from './containers/SliderMaker'
-// import FriendListApp from './containers/FriendListApp/FriendListApp';
 import NotFoundView from './views/NotFoundView';
 
 export default (

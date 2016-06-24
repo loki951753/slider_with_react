@@ -1,10 +1,10 @@
 import * as types from '../constants/ActionTypes';
 
-export function addText(props={}) {
+export function addCom(comType){
   return {
-    type: types.ADD_TEXT,
-    props
-  };
+    type: types.ADD_COM,
+    comType
+  }
 }
 
 export function selectCom(id=0){
@@ -134,5 +134,54 @@ export function changeItemFontSize(id, fontSize){
     type: types.CHANGE_ITEM_FONTSIZE,
     id,
     fontSize
+  }
+}
+
+export function changeItemRotate(id, rotate){
+  return {
+    type: types.CHANGE_ITEM_ROTATE,
+    id,
+    rotate
+  }
+}
+
+export function changeItemShadow(id, shadow){
+  return {
+    type: types.CHANGE_ITEM_SHADOW,
+    id,
+    shadow
+  }
+}
+
+export function changeItemOpacity(id, opacity){
+  return {
+    type: types.CHANGE_ITEM_OPACITY,
+    id,
+    opacity
+  }
+}
+export function changeItemRadius(id, radius){
+  return {
+    type: types.CHANGE_ITEM_RADIUS,
+    id,
+    radius
+  }
+}
+
+export function deleteCom(){
+  return {
+    type: types.DELETE_COM
+  }
+}
+
+export function addComIndex(){
+  return {
+    type: types.ADD_COM_INDEX
+  }
+}
+
+export function minusComIndex(){
+  return {
+    type: types.MINUS_COM_INDEX
   }
 }

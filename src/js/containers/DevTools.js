@@ -11,7 +11,7 @@ export default createDevTools(
   <DockMonitor toggleVisibilityKey="ctrl-h"
                changePositionKey="ctrl-q"
                changeMonitorKey="ctrl-m"
-               defaultPosition="right">
+               defaultPosition="left">
     <LogMonitor theme="nicinabox" />
     <SliderMonitor keyboardEnabled />
   </DockMonitor>

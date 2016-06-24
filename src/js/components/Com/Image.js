@@ -6,12 +6,17 @@ import * as actions from '../../actions/WorkspaceActions'
 
 import BaseCom from './BaseCom'
 
-class Text extends Component {
+class Image extends Component {
   constructor(props){
     super(props)
-    console.log(props);
   }
   render(){
+    const baseStyle = {
+      height: '100%',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundPostion: 'top center'
+    }
     return (
       <BaseCom
         id={this.props.id}
@@ -27,10 +32,15 @@ class Text extends Component {
         stopDrag={this.props.stopDrag}
         stopResize={this.props.stopResize}
       >
-        <div style={{...this.props.style, fontSize:`${this.props.fontSize}${this.props.fontSizeUnit}`}}>
-          {
-            this.props.content.toJS().map((contentItem,index)=>(<p key={index}>{contentItem}</p>))
-          }
+        <div style={{
+            ...baseStyle
+            , backgroundImage:`url(${this.props.src})`
+            , borderRadius:`${this.props.radius}%`
+            , boxShadow: `black 0px 0px ${this.props.shadow}px`
+            , opacity: (100 - this.props.opacity)/100.0
+            , transform: `rotate(${this.props.rotate}deg)`
+
+          }}>
         </div>
       </BaseCom>
     )
@@ -38,17 +48,6 @@ class Text extends Component {
 }
 
 function mapStateToProps(state) {
-  // const selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-  // const selectedItem = state.get('pagesById').get(selectedPageIndex).get('items').find(item=>item.get('id')===state.get('selectedComId'))
-  //
-  // const _selectedItem = selectedItem.toJS()
-  // return {
-  //
-  //   x: _selectedItem.postion[0],
-  //   y: _selectedItem.postion[1],
-  //   width: _selectedItem.dimension[0],
-  //   height: _selectedItem.dimension[1]
-  // };
   return {
 
   }
@@ -62,5 +61,5 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-Text = connect(mapStateToProps, mapDispatchToProps)(Text)
-export default Text
+Image = connect(mapStateToProps, mapDispatchToProps)(Image)
+export default Image
