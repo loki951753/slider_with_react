@@ -7,6 +7,8 @@ import utils from '../common/utils'
 import Immutable from 'immutable'
 import _ from 'lodash'
 
+import undoable, { excludeAction } from 'redux-undo'
+
 const initialState = Immutable.fromJS({
   carouselWidth: staticValues.CAROUSEL_WIDTH,
   carouselHeight: staticValues.CAROUSEL_HEIGHT,
@@ -29,8 +31,8 @@ const initialState = Immutable.fromJS({
         dimension: [50, 100]
       },
       {
-        id : 5,
-        index: 5,
+        id : 1,
+        index: 1,
         type: comTypes.IMAGE,
         animation:'',
         position: [-3, 73],
@@ -42,25 +44,12 @@ const initialState = Immutable.fromJS({
         rotate: 0
       },
       {
-        id : 1,
-        index: 1,
-        type: comTypes.IMAGE,
-        animation:'',
-        position: [0, 45],
-        dimension: [640, 529],
-        src:"/images/1.png",
-        opacity: 0,
-        radius: 0,
-        shadow: 0,
-        rotate: 0
-      },
-      {
         id : 2,
         index: 2,
         type: comTypes.IMAGE,
         animation:'',
-        position: [-3, 749],
-        dimension: [645, 85],
+        position: [0, 45],
+        dimension: [640, 529],
         src:"/images/1.png",
         opacity: 0,
         radius: 0,
@@ -156,8 +145,7 @@ const genId = function(state){
   return maxId + 1
 }
 
-export default function(state = initialState, action){
-
+const pageList = function(state = initialState, action){
   let selectedPageIndex
   let selectedPage
   let selectedItemIndex
@@ -199,6 +187,17 @@ export default function(state = initialState, action){
       return state.set('selectedPageId', action.id).set('selectedComId', 0)
     }
 
+    case types.SELECT_BACKGROUND: {
+      console.log('select background');
+
+      return state.set('selectedComId', 0)
+    }
+
+    case types.CHANGE_SLIDE_EFFECT: {
+      console.log('change slide effect');
+
+      return state.set('effect', slideEffect.effectArray[action.effect])
+    }
     case types.ADD_COM:{
       console.log(`add com: ${action.comType}`);
 
@@ -270,24 +269,45 @@ export default function(state = initialState, action){
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
       selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===state.get('selectedComId'))
 
-      comCounts = state.getIn(['pagesById', selectedPageIndex, 'items']).length
+      //id 0 is background
+      const comCounts = state.getIn(['pagesById', selectedPageIndex, 'items']).size - 1
 
-      if (selectedItemIndex === (length - 1)) {
+      //start with 1
+      if (selectedItemIndex === comCounts) {
+        // the last index item
         return state
       } else {
-        selectedItem = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex])
-        selectedItemIndex = selectedItem.get('index')
-        nextItem = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex+1])
-        nextItemIndex = nextItem.get('index')
+        let selectedItem = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex])
+        let nextItem = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex+1])
+        let nextItemIndex = nextItem.get('index')
 
-        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex], nextItem.setIn('index', nextItemIndex))
-                    .setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex+1], selectedItem.setIn('index', selectedItemIndex))
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex], nextItem.set('index', selectedItemIndex))
+                    .setIn(['pagesById', selectedPageIndex, 'items', nextItemIndex], selectedItem.set('index', nextItemIndex))
       }
       break;
     }
 
     case types.MINUS_COM_INDEX: {
       console.log("minus com index");
+
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===state.get('selectedComId'))
+
+      //id 0 is background
+      const comCounts = state.getIn(['pagesById', selectedPageIndex, 'items']).size - 1
+
+      //start with 1
+      if (selectedItemIndex === 1) {
+        // the first index item
+        return state
+      } else {
+        let selectedItem = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex])
+        let nextItem = state.getIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex-1])
+        let nextItemIndex = nextItem.get('index')
+
+        return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex], nextItem.set('index', selectedItemIndex))
+                    .setIn(['pagesById', selectedPageIndex, 'items', nextItemIndex], selectedItem.set('index', nextItemIndex))
+      }
 
       break;
     }
@@ -357,7 +377,7 @@ export default function(state = initialState, action){
       selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
 
       return state.setIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'animation'],
-                              Immutable.fromJS(action.animation))
+                              action.animation)
       break;
 
     case types.CHANGE_ITEM_RADIUS:
@@ -521,16 +541,9 @@ export default function(state = initialState, action){
       }
       break;
 
-    case types.MOVE_COM: {
-      console.log("move item");
-
-      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
-      return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position'],
-                              v=>Immutable.List([action.left, action.top]))
-
-    }
     default:
       return state
   }
 }
+
+export default undoable(pageList, {filter: excludeAction([types.SELECT_PAGE, types.SELECT_BACKGROUND, types.SELECT_COM])})

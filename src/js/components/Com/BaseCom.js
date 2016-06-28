@@ -43,9 +43,11 @@ class BaseCom extends Component {
   componentWillReceiveProps(props){
     this.setState({width: props.width, height: props.height, left: props.x, top: props.y});
   }
-  handleClick(){
+  handleClick(e){
     console.log('click');
+    e.stopPropagation()
     this.selectCom(this.id)
+    return false
   }
 
   onDragHandler(handlerName){
@@ -75,6 +77,8 @@ class BaseCom extends Component {
           newPosition.left = this.state.dragging.left;
           newPosition.top = this.state.dragging.top;
           this.setState({dragging: null});
+          console.log('on drag stop');
+          console.log(this.state.left, this.state.top);
           this.stopDrag(this.id, this.state.left, this.state.top)
           break;
         default:
@@ -96,16 +100,17 @@ class BaseCom extends Component {
   }
 
   render(){
-    console.log(`index:${this.props.index}`);
     return (
-      <div  className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}
-            style={{
-              left:this.state.left
-              , top:this.state.top
-              , position:'absolute'
-              , zIndex: this.props.index
-            }}
-            onClick={this.handleClick}
+      <div
+        className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}
+        style={{
+          left:this.state.left
+          , top:this.state.top
+          , position:'absolute'
+          , zIndex: this.props.index
+        }}
+        data-id={this.id}
+        onClick={this.handleClick}
         >
         <DraggableCore
           onStart={this.onDragHandler('onDragStart')}

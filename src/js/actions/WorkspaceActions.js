@@ -14,6 +14,7 @@ export function selectCom(id=0){
   }
 }
 export function stopDrag(id, x, y) {
+  console.log("stop:",x,y);
   return {
     type: types.STOP_DRAG,
     id,
@@ -183,5 +184,24 @@ export function addComIndex(){
 export function minusComIndex(){
   return {
     type: types.MINUS_COM_INDEX
+  }
+}
+
+export function clickOtherArea(){
+  return {
+    type: types.SELECT_BACKGROUND
+  }
+}
+
+export function selectBackground(){
+  return {
+    type: types.SELECT_BACKGROUND
+  }
+}
+
+export function changeSlideEffect(effect){
+  return {
+    type: types.CHANGE_SLIDE_EFFECT,
+    effect
   }
 }

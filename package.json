@@ -86,6 +86,7 @@
     "react-resizable": "^1.4.1",
     "react-router": "2.3.0",
     "react-tap-event-plugin": "^1.0.0",
-    "redux": "3.5.2"
+    "redux": "3.5.2",
+    "redux-undo": "^1.0.0-beta8"
   }
 }

@@ -9,7 +9,6 @@ import BaseCom from './BaseCom'
 class Text extends Component {
   constructor(props){
     super(props)
-    console.log(props);
   }
   render(){
     return (

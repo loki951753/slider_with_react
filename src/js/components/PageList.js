@@ -47,9 +47,10 @@ class PageList extends Component {
 }
 
 function mapStateToProps(state) {
+  const pageList = state.pageList.present
   return {
-    pagesById: state.pageList.get('pagesById'),
-    selectedId: state.pageList.get('selectedPageId')
+    pagesById: pageList.get('pagesById'),
+    selectedId: pageList.get('selectedPageId')
   };
 }
 

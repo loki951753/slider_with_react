@@ -1,14 +1,45 @@
 import React, { Component, PropTypes } from 'react';
+import * as actions from '../actions/WorkspaceActions.js'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+
 import MaterialPanel from './MaterialPanel.js'
 import Carousel from './Carousel.js';
-
+import ControlPanel from './ControlPanel.js'
 import './Workspace.sass'
 
-const Workspace = ()=> (
-  <div className="workspace">
-    <MaterialPanel></MaterialPanel>
-    <Carousel></Carousel>
-  </div>
-)
+class Workspace extends Component {
+  constructor(props){
+    super(props)
 
+    this.onClick = this.onClick.bind(this)
+  }
+  onClick(){
+    this.props.clickOtherArea()
+  }
+  render(){
+    return (
+      <div className="workspace" onClick={this.onClick}>
+        <MaterialPanel></MaterialPanel>
+        <Carousel></Carousel>
+        <ControlPanel></ControlPanel>
+      </div>
+    )
+  }
+}
+
+function mapStateToProps(state){
+  return {
+
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    clickOtherArea: bindActionCreators(actions.clickOtherArea, dispatch)
+  }
+}
+
+Workspace = connect(mapStateToProps, mapDispatchToProps)(Workspace)
 export default Workspace
