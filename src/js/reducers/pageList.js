@@ -2,7 +2,6 @@ import * as types from '../constants/ActionTypes';
 import * as comTypes from '../constants/ComTypes';
 import * as slideEffect from '../constants/SlideEffect'
 import * as staticValues from '../constants/StaticValues'
-import utils from '../common/utils'
 
 import Immutable from 'immutable'
 import _ from 'lodash'
@@ -132,18 +131,6 @@ const initialState = Immutable.fromJS({
   }],
   selectedComId: 0
 });
-
-const genId = function(state){
-  const currentPage = utils.findPageById(state.pagesById, state.selectedId)
-  let maxId = 0
-
-  currentPage.items.forEach((ele)=> {
-    if(ele.id >= maxId){
-      maxId = ele.id;
-    }
-  })
-  return maxId + 1
-}
 
 const pageList = function(state = initialState, action){
   let selectedPageIndex

@@ -11,6 +11,7 @@ class Text extends Component {
     super(props)
   }
   render(){
+    console.log('render Text');
     return (
       <BaseCom
         id={this.props.id}

@@ -12,8 +12,6 @@ import classnames from 'classnames';
 import * as actions from '../actions/WorkspaceActions.js'
 import * as comTypes from '../constants/ComTypes.js'
 
-import utils from '../common/utils'
-
 import Com_Text from './Com/Text'
 import Com_Image from './Com/Image'
 

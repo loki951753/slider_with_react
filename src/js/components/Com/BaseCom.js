@@ -100,6 +100,7 @@ class BaseCom extends Component {
   }
 
   render(){
+    console.log('render base com');
     return (
       <div
         className={classnames({"myDrag": true, 'com-selected':this.props.isSelected})}

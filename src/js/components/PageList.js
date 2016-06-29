@@ -22,6 +22,7 @@ class PageList extends Component {
     this.props.addPage()
   }
   render(){
+    console.log("render pagelist");
     const { pagesById, selectedId } = this.props
     return (
       <div className="page-list">

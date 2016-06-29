@@ -1,13 +1,17 @@
-export const ADD_FRIEND = 'ADD_FRIEND';
-export const STAR_FRIEND = 'STAR_FRIEND';
-export const DELETE_FRIEND = 'DELETE_FRIEND';
-
+//********************************** page **********************************
 export const ADD_PAGE = 'ADD_PAGE';
 export const SELECT_PAGE = 'SELECT_PAGE'
 
+//********************************** component **********************************
 export const ADD_COM = 'ADD_COM'
 export const DELETE_COM = 'DELETE_COM'
 export const SELECT_COM = 'SELECT_COM'
+
+export const SELECT_BACKGROUND = "SELECT_BACKGROUND"
+export const CHANGE_SLIDE_EFFECT = "CHANGE_SLIDE_EFFECT"
+
+export const ADD_COM_INDEX = "ADD_COM_INDEX"
+export const MINUS_COM_INDEX = "MINUS_COM_INDEX"
 
 export const STOP_DRAG = "STOP_DRAG"
 export const STOP_RESIZE = "STOP_RESIZE"
@@ -33,9 +37,3 @@ export const TEXT_ALIGN_RIGHT = "TEXT_ALIGN_RIGHT"
 export const TEXT_ITALIC = "TEXT_ITALIC"
 export const TEXT_BOLD = "TEXT_BOLD"
 export const TEXT_UNDERLINED = "TEXT_UNDERLINED"
-
-export const ADD_COM_INDEX = "ADD_COM_INDEX"
-export const MINUS_COM_INDEX = "MINUS_COM_INDEX"
-
-export const SELECT_BACKGROUND = "SELECT_BACKGROUND"
-export const CHANGE_SLIDE_EFFECT = "CHANGE_SLIDE_EFFECT"

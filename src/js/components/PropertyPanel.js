@@ -181,6 +181,7 @@ class PropertyPanel extends Component {
   }
 
   render(){
+    console.log("render property panel");
     const {selectedComId, selectedPageId, pagesById} = this.props
     this.id = selectedComId
 

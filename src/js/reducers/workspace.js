@@ -1,8 +1,6 @@
 import * as types from '../constants/ActionTypes';
 import { assign } from 'lodash';
 
-import utils from '../common/utils'
-
 const initialState = [
   {
     pageId: 0,

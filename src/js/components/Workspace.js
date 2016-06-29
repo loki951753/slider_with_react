@@ -19,6 +19,7 @@ class Workspace extends Component {
     this.props.clickOtherArea()
   }
   render(){
+    console.log("render workspace");
     return (
       <div className="workspace" onClick={this.onClick}>
         <MaterialPanel></MaterialPanel>
