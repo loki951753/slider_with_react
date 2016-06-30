@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators, compose } from 'redux';
+import Immutable from 'immutable'
 
 import * as actions from '../../actions/WorkspaceActions'
 
@@ -10,35 +10,37 @@ class Image extends Component {
   constructor(props){
     super(props)
   }
+
+  shouldComponentUpdate(nextProps){
+    return !(Immutable.is(this.props.data, nextProps.data)
+              && (this.props.isSelected === nextProps.isSelected))
+  }
   render(){
+    console.log('render image');
     const baseStyle = {
       height: '100%',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundPostion: 'top center'
     }
+    const data = Immutable.fromJS({
+      id: this.props.data.get('id'),
+      index: this.props.data.get('index'),
+      x:this.props.data.get('position').get('0'),
+      y: this.props.data.get('position').get('1'),
+      width: this.props.data.get('dimension').get('0'),
+      height: this.props.data.get('dimension').get('1'),
+      isSelected: this.props.isSelected
+    })
     return (
-      <BaseCom
-        id={this.props.id}
-        index={this.props.index}
-
-        isSelected={this.props.isSelected}
-        x={this.props.x}
-        y={this.props.y}
-        width={this.props.width}
-        height={this.props.height}
-
-        selectCom={this.props.selectCom}
-        stopDrag={this.props.stopDrag}
-        stopResize={this.props.stopResize}
-      >
+      <BaseCom data={data} >
         <div style={{
             ...baseStyle
-            , backgroundImage:`url(${this.props.src})`
-            , borderRadius:`${this.props.radius}%`
-            , boxShadow: `black 0px 0px ${this.props.shadow}px`
-            , opacity: (100 - this.props.opacity)/100.0
-            , transform: `rotate(${this.props.rotate}deg)`
+            , backgroundImage:`url(${this.props.data.get('src')})`
+            , borderRadius:`${this.props.data.get('radius')}%`
+            , boxShadow: `black 0px 0px ${this.props.data.get('shadow')}px`
+            , opacity: (100 - this.props.data.get('opacity'))/100.0
+            , transform: `rotate(${this.props.data.get('rotate')}deg)`
 
           }}>
         </div>
@@ -47,19 +49,4 @@ class Image extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    selectCom: bindActionCreators(actions.selectCom, dispatch),
-    stopDrag: bindActionCreators(actions.stopDrag, dispatch),
-    stopResize: bindActionCreators(actions.stopResize, dispatch)
-  };
-}
-
-Image = connect(mapStateToProps, mapDispatchToProps)(Image)
 export default Image

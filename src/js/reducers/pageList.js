@@ -9,14 +9,13 @@ import _ from 'lodash'
 import undoable, { excludeAction } from 'redux-undo'
 
 const initialState = Immutable.fromJS({
-  carouselWidth: staticValues.CAROUSEL_WIDTH,
-  carouselHeight: staticValues.CAROUSEL_HEIGHT,
   effect: slideEffect.SLIDE,
   pages: [0, 1],
   selectedPageId: 0,
   pagesById: [{
     id: 0,
     content: "douyu",
+    selectedComId: 0,
     items: [
       {
         id : 0,
@@ -85,6 +84,7 @@ const initialState = Immutable.fromJS({
   },{
     id: 1,
     content: "shark",
+    selectedComId: 0,
     items: [
       {
         id : 0,
@@ -128,8 +128,7 @@ const initialState = Immutable.fromJS({
         rotate: 0
       }
     ]
-  }],
-  selectedComId: 0
+  }]
 });
 
 const pageList = function(state = initialState, action){
@@ -148,7 +147,7 @@ const pageList = function(state = initialState, action){
       console.log(selectedIndex);
 
       return state.set('selectedPageId', newId)
-            .set('selectedComId', 0)
+            .setIn(['pagesById', selectedIndex+1, 'selectedComId'], 0)
             .set('pages', state.get('pages').insert(selectedIndex + 1, newId))
             .set('pagesById', state.get('pagesById').insert(selectedIndex+1, Immutable.fromJS({
               id: newId,
@@ -156,9 +155,8 @@ const pageList = function(state = initialState, action){
               items: [{
                 id : 0,
                 index: 0,
-                type: 'text',
+                type: comTypes.BACKGROUND,
                 style: {
-                  'backgroundColor':'yellow'
                 },
                 content:['text'],
                 animation:'',
@@ -171,13 +169,16 @@ const pageList = function(state = initialState, action){
     case types.SELECT_PAGE: {
       console.log('select page');
 
-      return state.set('selectedPageId', action.id).set('selectedComId', 0)
+      return state.set('selectedPageId', action.id)
+                  // .set('selectedComId', 0)
     }
 
     case types.SELECT_BACKGROUND: {
       console.log('select background');
 
-      return state.set('selectedComId', 0)
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+
+      return state.setIn(['pagesById', selectedPageIndex, 'selectedComId'], 0)
     }
 
     case types.CHANGE_SLIDE_EFFECT: {
@@ -188,8 +189,8 @@ const pageList = function(state = initialState, action){
     case types.ADD_COM:{
       console.log(`add com: ${action.comType}`);
 
-      selectedPage = state.get('pagesById').find(page=>page.get('id')===state.get('selectedPageId'))
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedPage = state.get('pagesById').get(selectedPageIndex)
       const id = selectedPage.get('items').maxBy(item=>item.get('id')).get('id') + 1
 
       let com;
@@ -227,8 +228,8 @@ const pageList = function(state = initialState, action){
         default:
 
       }
-      return state.setIn(['pagesById', selectedPageIndex, 'items'], selectedPage.get('items').push(Immutable.fromJS(com)))
-                  .setIn(['selectedComId'], id)
+      return state.updateIn(['pagesById', selectedPageIndex, 'items'], v=>v.push(Immutable.fromJS(com)))
+                  .setIn(['pagesById', selectedPageIndex, 'selectedComId'], id)
 
     }
 
@@ -236,17 +237,20 @@ const pageList = function(state = initialState, action){
       console.log("delete com");
 
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===state.get('selectedComId'))
+      selectedItemIndex = state.getIn(['pagesById', selectedPageIndex, 'items'])
+                               .findIndex(item=>item.get('id')===state.getIn(['pagesById', selectedPageIndex, 'selectedComId']))
 
       return state.deleteIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex])
-                  .set('selectedComId', 0)
+                  .setIn(['pagesById', selectedPageIndex, 'selectedComId'], 0)
       break;
     }
 
     case types.SELECT_COM: {
       console.log("select com");
 
-      return state.set('selectedComId', action.id)
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+
+      return state.setIn(['pagesById', selectedPageIndex, 'selectedComId'], action.id)
       break;
     }
 
@@ -254,7 +258,8 @@ const pageList = function(state = initialState, action){
       console.log("add com index");
 
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===state.get('selectedComId'))
+      selectedItemIndex = state.getIn(['pagesById', selectedPageIndex, 'items'])
+                               .findIndex(item=>item.get('id')===state.getIn(['pagesById', selectedPageIndex, 'selectedComId']))
 
       //id 0 is background
       const comCounts = state.getIn(['pagesById', selectedPageIndex, 'items']).size - 1
@@ -278,7 +283,8 @@ const pageList = function(state = initialState, action){
       console.log("minus com index");
 
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===state.get('selectedComId'))
+      selectedItemIndex = state.getIn(['pagesById', selectedPageIndex, 'items'])
+                               .findIndex(item=>item.get('id')===state.getIn(['pagesById', selectedPageIndex, 'selectedComId']))
 
       //id 0 is background
       const comCounts = state.getIn(['pagesById', selectedPageIndex, 'items']).size - 1
@@ -303,7 +309,8 @@ const pageList = function(state = initialState, action){
       console.log('stop drag');
 
       selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
-      selectedItemIndex = state.get('pagesById').get(selectedPageIndex).get('items').findIndex(item=>item.get('id')===action.id)
+      selectedItemIndex = state.getIn(['pagesById', selectedPageIndex, 'items'])
+                               .findIndex(item=>item.get('id')===action.id)
 
       console.log(action);
       return state.updateIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex, 'position'],

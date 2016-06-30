@@ -4,7 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import PageList from '../components/PageList';
+import PageList from '../containers/PageList';
 import Workspace from '../components/Workspace';
 import PropertyPanel from '../components/PropertyPanel';
 

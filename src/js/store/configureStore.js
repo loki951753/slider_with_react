@@ -2,6 +2,15 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from '../reducers';
 import { persistState } from 'redux-devtools';
 
+const perflogger = store => next => action => {
+  console.log( '%c Dispatching ', 'background: #222; color: #bada55', action );
+  const start = performance.now();
+  const result = next( action );
+  const end = performance.now();
+  console.log( `%c Action with type "${action.type}" took ${( end-start ).toFixed( 2 )} milliseconds.`, 'background: #bada55; color: #222' );
+  return result;
+}
+
 export default function configureStore(initialState) {
 
   let middleware = applyMiddleware();
@@ -10,7 +19,7 @@ export default function configureStore(initialState) {
   if (process.env.NODE_ENV !== 'production') {
 
     let middlewares = [require('redux-immutable-state-invariant')()];
-    middleware = applyMiddleware(...middlewares);
+    middleware = applyMiddleware(...middlewares, perflogger);
 
     let getDebugSessionKey = function () {
       // By default we try to read the key from ?debug_session=<key> in the address bar

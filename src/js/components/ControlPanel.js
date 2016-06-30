@@ -30,7 +30,7 @@ class ControlPanel extends Component {
     let animationEnd = 'webkitAnimationEnd'
 
     for (let item of this.items) {
-      if (item.type === comTypes.BACKGROUND) {
+      if ((item.type === comTypes.BACKGROUND) || (item.animation.length === 0)) {
         continue
       }
       let el = root.querySelector(`[data-id='${item.id}']`)

@@ -182,11 +182,12 @@ class PropertyPanel extends Component {
 
   render(){
     console.log("render property panel");
-    const {selectedComId, selectedPageId, pagesById} = this.props
-    this.id = selectedComId
+    const {selectedPageId, pagesById} = this.props
 
-    const items = pagesById.find(page=> page.get('id') === selectedPageId)
-                                .get('items')
+    const selectedPage = pagesById.find(page=> page.get('id') === selectedPageId)
+    const selectedComId = selectedPage.get('selectedComId')
+    this.id = selectedComId
+    const items = selectedPage.get('items')
 
     //except the id:0 for background
     const comCounts = items.size - 1
@@ -671,8 +672,7 @@ function mapStateToProps(state) {
 
   return {
     selectedPageId: pageList.get('selectedPageId'),
-    pagesById: pageList.get('pagesById'),
-    selectedComId: pageList.get('selectedComId')
+    pagesById: pageList.get('pagesById')
 
     , effect: pageList.get('effect')
   };

@@ -17,12 +17,6 @@ class MaterialPanel extends Component{
   constructor(props){
     super(props)
 
-    this.addCom = this.addCom.bind(this)
-  }
-  addCom(type){
-    return ()=>this.props.addCom(type)
-  }
-  render(){
     const styles = {
       smallIcon: {
         width: 36,
@@ -52,14 +46,25 @@ class MaterialPanel extends Component{
         padding: 30,
       },
     };
+    this.styles = styles
+
+    this.addCom = this.addCom.bind(this)
+
+  }
+  addCom(type){
+    return ()=>this.props.addCom(type)
+  }
+  render(){
+    console.log("render material panel");
+
     return (
       <div className="m-container">
         <IconButton
           id="addTextCom"
           tooltip="add text"
           onClick={this.addCom(comTypes.TEXT)}
-          iconStyle={styles.smallIcon}
-          style={styles.small}
+          iconStyle={this.styles.smallIcon}
+          style={this.styles.small}
           >
             <EditorTitle color={"#fff"}/>
         </IconButton>
@@ -67,8 +72,8 @@ class MaterialPanel extends Component{
           id="addImageCom"
           tooltip="add image"
           onClick={this.addCom(comTypes.IMAGE)}
-          iconStyle={styles.smallIcon}
-          style={styles.small}
+          iconStyle={this.styles.smallIcon}
+          style={this.styles.small}
           >
             <EditorInsertPhoto color={"#fff"}/>
         </IconButton>

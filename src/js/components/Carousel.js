@@ -1,112 +1,46 @@
 import React, { Component, PropTypes } from 'react';
 
-import flow from 'lodash/flow'
-
 import { connect } from 'react-redux'
 import { bindActionCreators, compose } from 'redux';
-
-import { DropTarget } from 'react-dnd';
 
 import classnames from 'classnames';
 
 import * as actions from '../actions/WorkspaceActions.js'
 import * as comTypes from '../constants/ComTypes.js'
+import * as staticValues from '../constants/StaticValues'
 
-import Com_Text from './Com/Text'
-import Com_Image from './Com/Image'
+import PageItem from './PageItem'
 
-// require("imports?this=>window!../vendor/swiper.js")
-// import '../vendor/swiper.css'
 import './Carousel.sass'
 
 const style = {
   'backgroundColor': '#fff'
 }
 
-let id = 0;
-
-// const carouselTarget = {
-//   drop(props, monitor, component){
-//     console.log(component);
-//     const item = monitor.getItem()
-//     const delta = monitor.getDifferenceFromInitialOffset()
-//     console.log(item);
-//     console.log(delta);
-//     const left = Math.round(item.left + delta.x)
-//     const top = Math.round(item.top + delta.y)
-//
-//     props.moveCom(item.id, left, top);
-//   }
-// }
-//
-// function collect(connect) {
-//   return {
-//     connectDropTarget: connect.dropTarget()
-//   };
-// }
-
 class Carousel extends Component {
   constructor(props){
     super(props)
-    // const { moveCom } = props.moveCom
-    // this.moveCom = moveCom
   }
 
   render(){
-    const { pagesById, selectedPageId, selectedComId, carouselWidth, carouselHeight } = this.props;
+    console.log('render carousel');
+    const { pagesById, selectedPageId } = this.props;
 
     return (
       <div
         id="swiperContainer"
         className="swiper-container"
-        style={{...style, width:carouselWidth, height:carouselHeight}}
+        style={{...style, width: staticValues.CAROUSEL_WIDTH, height: staticValues.CAROUSEL_HEIGHT}}
         >
         <div className="swiper-wrapper">
           {
             pagesById.map((page)=>{
               return (
-                <div key={page.get('id')} className={classnames('swiper-slide', {'selected': selectedPageId === page.get('id')})}>
-                  {
-                    page.get('items').map((item)=>{
-                      switch (item.get('type')) {
-                        case comTypes.TEXT:
-                          return <Com_Text key={item.get('id')}
-                                           id={item.get('id')}
-                                           index={item.get('index')}
-                                           style={item.get('style').toJS()}
-                                           fontSize={item.get('fontSize')}
-                                           fontSizeUnit={item.get('fontSizeUnit')}
-                                           content={item.get('content')}
-                                           x={item.get('position').get('0')}
-                                           y={item.get('position').get('1')}
-                                           width={item.get('dimension').get('0')}
-                                           height={item.get('dimension').get('1')}
-                                           isSelected={selectedComId === item.get('id')}
-                                 />
-                          break;
-                        case comTypes.IMAGE:
-                          return <Com_Image
-                                    key={item.get('id')}
-                                    id={item.get('id')}
-                                    index={item.get('index')}
-                                    x={item.get('position').get('0')}
-                                    y={item.get('position').get('1')}
-                                    width={item.get('dimension').get('0')}
-                                    height={item.get('dimension').get('1')}
-                                    isSelected={selectedComId === item.get('id')}
-                                    opacity={item.get('opacity')}
-                                    radius={item.get('radius')}
-                                    shadow={item.get('shadow')}
-                                    rotate={item.get('rotate')}
-                                    src={item.get('src')}
-                            />
-                          break;
-                        default:
-                          return null
-                      }
-                    })
-                  }
-                </div>
+                <PageItem
+                  key={page.get('id')}
+                  pageData = {page}
+                  isSelected={selectedPageId === page.get('id')}
+                  />
               )
             })
           }
@@ -122,27 +56,14 @@ function mapStateToProps(state) {
   const pageList = state.pageList.present
   return {
     selectedPageId: pageList.get('selectedPageId'),
-    pagesById: pageList.get('pagesById'),
-    selectedComId: pageList.get('selectedComId'),
-
-    carouselWidth: pageList.get('carouselWidth'),
-    carouselHeight: pageList.get('carouselHeight')
+    pagesById: pageList.get('pagesById')
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    // addPage: bindActionCreators(actions.addPage, dispatch),
-    // selectPage: bindActionCreators(actions.selectPage, dispatch)
-    // moveCom: bindActionCreators(actions.moveCom, dispatch)
-    // selectBackground: bindActionCreators(actions.selectBackground, dispatch)
   };
 }
 
 Carousel = connect(mapStateToProps, mapDispatchToProps)(Carousel)
-// Carousel = DropTarget(ItemTypes.COM, carouselTarget, collect)(Carousel)
-// Carousel = flow(
-//   DropTarget(ItemTypes.COM, carouselTarget, collect),
-//   connect(mapStateToProps, mapDispatchToProps)
-// )(Carousel)
 export default Carousel

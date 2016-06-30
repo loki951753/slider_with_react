@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
+import Immutable from 'immutable'
 
 import * as actions from '../actions/PageListActions.js'
 
-import PageListItem from './PageListItem.js'
 import './PageList.sass'
 
+import PageListItem from '../components/PageListItem.js'
 
 class PageList extends Component {
   constructor(props, context){
@@ -21,9 +22,12 @@ class PageList extends Component {
   addPage(){
     this.props.addPage()
   }
+  shouldComponentUpdate(nextProps){
+    return !Immutable.is(this.props, nextProps)
+  }
   render(){
     console.log("render pagelist");
-    const { pagesById, selectedId } = this.props
+    const { pagesById, selectedPageId } = this.props
     return (
       <div className="page-list">
         <ul>
@@ -33,7 +37,7 @@ class PageList extends Component {
                 key={page.get('id')}
                 index={index}
                 page={page}
-                selectedId={selectedId}
+                selected={selectedPageId === page.get('id')}
                 onClick={()=>(this.onClick(page.get('id')))}
               />
             })
@@ -51,7 +55,7 @@ function mapStateToProps(state) {
   const pageList = state.pageList.present
   return {
     pagesById: pageList.get('pagesById'),
-    selectedId: pageList.get('selectedPageId')
+    selectedPageId: pageList.get('selectedPageId')
   };
 }
 
