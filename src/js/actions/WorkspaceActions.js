@@ -1,4 +1,6 @@
 import * as types from '../constants/ActionTypes';
+import $ from 'jquery'
+
 
 export function addCom(comType){
   return {
@@ -203,5 +205,22 @@ export function changeSlideEffect(effect){
   return {
     type: types.CHANGE_SLIDE_EFFECT,
     effect
+  }
+}
+
+export function save(){
+  const urlArray = window.location.href.split('/')
+  const id = urlArray[urlArray.length-2]
+
+  return dispatch => {
+    console.log('get you');
+    $.ajax({
+      method: "POST",
+      url: `/api_v1/page/${id}`,
+      dataType: "json"
+    }).success((data)=>{
+      console.log(`get data from server:${data}`);
+      dispatch()
+    })
   }
 }

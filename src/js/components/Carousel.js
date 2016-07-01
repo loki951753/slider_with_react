@@ -31,6 +31,7 @@ class Carousel extends Component {
         id="swiperContainer"
         className="swiper-container"
         style={{...style, width: staticValues.CAROUSEL_WIDTH, height: staticValues.CAROUSEL_HEIGHT}}
+        onClick = {this.props.clickOtherArea}
         >
         <div className="swiper-wrapper">
           {
@@ -62,6 +63,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    clickOtherArea: bindActionCreators(actions.clickOtherArea, dispatch)
   };
 }
 

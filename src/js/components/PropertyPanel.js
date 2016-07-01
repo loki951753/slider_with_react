@@ -31,6 +31,8 @@ orange200,
 deepOrange300,
 pink400,
 purple500,
+grey500,
+red500
 } from 'material-ui/styles/colors';
 
 import injectTapEventPlugin from 'react-tap-event-plugin'
@@ -201,13 +203,21 @@ class PropertyPanel extends Component {
       marginRight: 24
     }
 
+    const tabStyle = {
+      backgroundColor: '#373F42'
+    }
+
+    const inkBarStyle = {
+      backgroundColor: red500
+    }
+
     console.log("property switch to: " + selectedCom.type);
     switch (selectedCom.type) {
       case comTypes.TEXT:
         return (
-          <Tabs className="property-panel"
+          <Tabs className="property-panel" inkBarStyle={inkBarStyle}
             >
-            <Tab label="property" value="property">
+            <Tab label="property" value="property" style={tabStyle}>
               <TextField id="property-panel-change-x"
                          value={selectedCom.position[0]}
                          floatingLabelText="X"
@@ -375,7 +385,7 @@ class PropertyPanel extends Component {
               <RaisedButton label="Delete" secondary={true} onClick={()=>(this.props.deleteCom())} />
 
             </Tab>
-            <Tab label="action" value="action">
+            <Tab label="action" value="action" style={tabStyle}>
               <Slider id="property-panel-change-speed"
                       defaultValue={1}
                       description={`speed: ${this.state.speedSlider}s`}
@@ -408,8 +418,8 @@ class PropertyPanel extends Component {
 
       case comTypes.IMAGE:
         return (
-          <Tabs className="property-panel">
-            <Tab label="property" value="property">
+          <Tabs className="property-panel" inkBarStyle={inkBarStyle}>
+            <Tab label="property" value="property" style={tabStyle}>
               <TextField id="property-panel-change-x"
                          value={selectedCom.position[0]}
                          floatingLabelText="X"
@@ -555,7 +565,7 @@ class PropertyPanel extends Component {
               <RaisedButton label="Delete" secondary={true} onClick={()=>(this.props.deleteCom())} />
 
             </Tab>
-            <Tab label="action" value="action">
+            <Tab label="action" value="action" style={tabStyle}>
               <Slider id="property-panel-change-speed"
                       defaultValue={1}
                       description={`speed: ${this.state.speedSlider}s`}
@@ -595,8 +605,8 @@ class PropertyPanel extends Component {
         console.log(this.props.effect);
 
         return (
-          <Tabs className="property-panel">
-            <Tab label="background" value="property">
+          <Tabs className="property-panel" inkBarStyle={inkBarStyle}>
+            <Tab label="background" value="property" style={tabStyle}>
               <Subheader>components</Subheader>
               <List>
                 {

@@ -19,13 +19,17 @@ if (process.env.NODE_ENV !== 'production') {
   console.log(Perf);
   // window.Perf.start()
   // If using routes
-  // <DevTools></DevTools>
+  // <DevTools />
   ComponentEl = (
-    <SliderMaker></SliderMaker>
+    <div>
+      <SliderMaker />
+    </div>
   );
 } else {
   ComponentEl = (
-    <SliderMaker></SliderMaker>
+    <div>
+      <SliderMaker></SliderMaker>
+    </div>
   );
 }
 

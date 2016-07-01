@@ -7,7 +7,8 @@ import classnames from 'classnames';
 import './MaterialPanel.sass'
 
 import IconButton from 'material-ui/IconButton';
-import {EditorTitle, EditorInsertPhoto} from 'material-ui/svg-icons'
+import Snackbar from 'material-ui/Snackbar';
+import {EditorTitle, EditorInsertPhoto, NotificationSdCard} from 'material-ui/svg-icons'
 import {grey300} from 'material-ui/styles/colors'
 
 import * as actions from '../actions/WorkspaceActions.js'
@@ -19,8 +20,8 @@ class MaterialPanel extends Component{
 
     const styles = {
       smallIcon: {
-        width: 36,
-        height: 36,
+        width: 30,
+        height: 30,
       },
       mediumIcon: {
         width: 48,
@@ -31,9 +32,11 @@ class MaterialPanel extends Component{
         height: 60,
       },
       small: {
-        width: 72,
-        height: 72,
-        padding: 16,
+        width: 30,
+        height: 30,
+        padding: 14,
+        paddingLeft: 20,
+        paddingRight: 40
       },
       medium: {
         width: 96,
@@ -49,10 +52,18 @@ class MaterialPanel extends Component{
     this.styles = styles
 
     this.addCom = this.addCom.bind(this)
+    this.save = this.save.bind(this)
 
   }
   addCom(type){
-    return ()=>this.props.addCom(type)
+    return (e)=>{
+      e.stopPropagation()
+      this.props.addCom(type)
+    }
+  }
+  save(e){
+    e.stopPropagation()
+    return this.props.save()
   }
   render(){
     console.log("render material panel");
@@ -77,6 +88,16 @@ class MaterialPanel extends Component{
           >
             <EditorInsertPhoto color={"#fff"}/>
         </IconButton>
+
+        <IconButton
+          id="save"
+          tooltip="save work"
+          onClick={this.save}
+          iconStyle={this.styles.smallIcon}
+          style={{...this.styles.small, float:'right'}}
+          >
+            <NotificationSdCard color={"#fff"}/>
+        </IconButton>
       </div>
     )
   }
@@ -90,6 +111,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return {
     addCom: bindActionCreators(actions.addCom, dispatch)
+    , save: ()=>dispatch(actions.save())
   }
 }
 
