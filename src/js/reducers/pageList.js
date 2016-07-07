@@ -540,4 +540,9 @@ const pageList = function(state = initialState, action){
   }
 }
 
-export default undoable(pageList, {filter: excludeAction([types.SELECT_PAGE, types.SELECT_BACKGROUND, types.SELECT_COM])})
+export default undoable(pageList, {
+  filter: (action)=>{
+    return [types.SELECT_PAGE, types.SELECT_BACKGROUND, types.SELECT_COM].indexOf(action.type) === -1
+  }
+})
+// export default undoable(pageList, {filter: excludeAction([types.SELECT_PAGE, types.SELECT_BACKGROUND, types.SELECT_COM])})

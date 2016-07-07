@@ -25,7 +25,11 @@ class BaseCom extends Component {
       top: data.y
     }
 
-    this.isResizing = false
+    this.isSelecting = false
+    //before, ing, after
+    //0,1,2
+    this.resizeState = 0
+    this.draggingState = 0
 
     this.handleClick = this.handleClick.bind(this)
 
@@ -40,10 +44,15 @@ class BaseCom extends Component {
     const data = props.data.toJS()
     this.setState({width: data.width, height: data.height, left: data.x, top: data.y});
   }
+
   handleClick(e){
-    console.log('click');
     e.stopPropagation()
+    if (this.isSelecting) {
+      return false
+    }
+    console.log('click');
     this.props.selectCom(this.id)
+    this.isSelecting = true
     return false
   }
 
@@ -54,6 +63,7 @@ class BaseCom extends Component {
       switch(handlerName){
         case 'onDragStart':
           // console.log('drag start');
+          if (!this.isSelecting) return false;
           const parentRect = node.offsetParent.getBoundingClientRect();
           const clientRect = node.getBoundingClientRect();
           newPosition.left = clientRect.left - parentRect.left;
@@ -61,6 +71,7 @@ class BaseCom extends Component {
           this.setState({dragging: newPosition});
           break;
         case 'onDrag':
+          if (!this.isSelecting) return false;
           // console.log('on drag');
           if (!this.state.dragging) throw new Error('onDrag called before onDragStart.');
           newPosition.left = this.state.dragging.left + deltaX;
@@ -69,6 +80,7 @@ class BaseCom extends Component {
           this.setState({top:this.state.top + newPosition.top, left:this.state.left + newPosition.left})
           break;
         case 'onDragStop':
+          if (!this.isSelecting) return false;
           // console.log('drag stop');
           if (!this.state.dragging) throw new Error('onDragEnd called before onDragStart.');
           newPosition.left = this.state.dragging.left;
@@ -84,6 +96,7 @@ class BaseCom extends Component {
 
   handleResizeStart(){
     console.log('resize start');
+    this.resizeState = 0
   }
 
   // shouldComponentUpdate(nextProps){
@@ -91,10 +104,12 @@ class BaseCom extends Component {
   //   return !Immutable.is(this.props.data, nextProps.data)
   // }
   handleOnResize(event, {element, size}){
+    this.resizeState = 1
     this.setState({width: size.width, height: size.height});
   }
 
   handleResizeStop(){
+    this.resizeState = 2
     this.props.stopResize(this.id, this.state.width, this.state.height)
   }
 
@@ -103,6 +118,7 @@ class BaseCom extends Component {
 
     const {isSelected, x, y, width, height, index, id} = this.props.data.toJS()
 
+    this.isSelecting = isSelected
     return (
       <div
         className={classnames({"myDrag": true, 'com-selected':isSelected})}

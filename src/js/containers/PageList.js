@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import Immutable from 'immutable'
+import { ignoreActions, filterActions } from 'redux-ignore'
 
 import * as actions from '../actions/PageListActions.js'
 
@@ -23,7 +24,9 @@ class PageList extends Component {
     this.props.addPage()
   }
   shouldComponentUpdate(nextProps){
-    return !Immutable.is(this.props, nextProps)
+    // return !Immutable.is(this.props.pagesById.get('items'), nextProps.pagesById.get('items'))
+    //         || !Immutable.is(this.props.selectedPageId, nextProps.selectedPageId)
+    return true
   }
   render(){
     console.log("render pagelist");

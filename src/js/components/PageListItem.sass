@@ -1,5 +1,4 @@
 .page-list-item-wrapper
-  height: 200px
   margin: 10px 20px
   list-style-type: none
   display: flex
@@ -8,8 +7,11 @@
     color: #000
   .page-list-item
     background-color: #fff
-    width: 90%
     cursor: pointer
     &.selected
       outline-style: solid
       outline-color: rgb(244, 67, 54)
+      outline-width: 2px
+    .page-list-item-thumb
+      position: relative
+      overflow: hidden

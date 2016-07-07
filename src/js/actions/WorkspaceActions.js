@@ -218,9 +218,12 @@ export function save(){
       method: "POST",
       url: `/api_v1/page/${id}`,
       dataType: "json"
-    }).success((data)=>{
+    }).done((data)=>{
       console.log(`get data from server:${data}`);
-      dispatch()
+      dispatch({
+        type: 'anoy'
+
+      })
     })
   }
 }
