@@ -168,9 +168,10 @@ const pageList = function(state = initialState, action){
     }
     case types.SELECT_PAGE: {
       console.log('select page');
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
 
       return state.set('selectedPageId', action.id)
-                  // .set('selectedComId', 0)
+                  .setIn(['pagesById', selectedPageIndex, 'selectedComId'], 0)
     }
 
     case types.SELECT_BACKGROUND: {
@@ -535,6 +536,123 @@ const pageList = function(state = initialState, action){
       }
       break;
 
+    case types.COPY:
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedPage = state.get('pagesById').find(page=>page.get('id')===state.get('selectedPageId'))
+      let selectedItemId = state.getIn(['pagesById', selectedPageIndex, 'selectedComId'])
+
+      let copied
+      if (selectedItemId === 0) {
+        //background being selected, copy the page
+        console.log('copy page');
+        //modify id when paste
+        //cause we dont know what it will be
+        copied = {
+          type:'page',
+          content: selectedPage
+        }
+        //we can set it to be a array in future
+      }else {
+        // copy component, add some bias to the origin x,y
+        console.log('copy component');
+        copied = {
+          type: 'com',
+          content: state.getIn(['pagesById', selectedPageIndex, 'items']).find(item=>item.get('id')===selectedItemId)
+        }
+      }
+      window.SliderMakerCopied = copied
+      //no state change when copy
+      return state;
+
+    case types.PASTE:
+      console.log('paste');
+      if (!window.SliderMakerCopied) {
+        return state
+      }else{
+        let copied = window.SliderMakerCopied
+        selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+
+        if (copied.type === 'page') {
+          console.log('paste page');
+          const newId = state.get('pages').max() + 1
+          return state.set('selectedPageId', newId)
+                      .set('pages', state.get('pages').insert(selectedPageIndex+1,newId))
+                      .set('pagesById', state.get('pagesById').insert(selectedPageIndex+1, copied.content.set('id', newId)))
+
+        }else if(copied.type === 'com'){
+          console.log('paste component');
+
+          const selectedComId = state.getIn(['pagesById', selectedPageIndex, 'selectedComId'])
+          selectedItemIndex = state.getIn(['pagesById', selectedPageIndex, 'items']).findIndex(item=>item.get('id')===selectedComId)
+
+          const items = state.getIn(['pagesById', selectedPageIndex, 'items'])
+          const newId = items.maxBy(item=>item.get('id')).get('id') + 1
+          //put it to the top
+          const index = items.maxBy(item=>item.get('index')).get('index') + 1
+
+          return state.setIn(['pagesById', selectedPageIndex, 'selectedComId'], newId)
+                      .updateIn(['pagesById', selectedPageIndex, 'items'], v=>v.insert(selectedItemIndex+1, copied.content.set('id', newId).set('index', index)))
+        }
+      }
+      break;
+    case types.DEL:
+      console.log('del');
+      selectedPageIndex = state.get('pagesById').findIndex(page=>page.get('id')===state.get('selectedPageId'))
+      selectedPage = state.get('pagesById').find(page=>page.get('id')===state.get('selectedPageId'))
+      let selectedComId = state.getIn(['pagesById', selectedPageIndex, 'selectedComId'])
+      if (selectedComId === 0) {
+        console.log("del page");
+        //if not the last, ++
+        //if is the last, and has pre-element, select the last pre
+        let pageLength = state.get('pages').size
+        let nextSelectedId
+        if (selectedPageIndex !== pageLength - 1) {
+          nextSelectedId = state.getIn(['pages', selectedPageIndex+1])
+
+          return state.set('selectedPageId', nextSelectedId)
+                      .setIn(['pagesById', selectedPageIndex+1, 'selectedComId'], 0)
+                      .deleteIn(['pagesById', selectedPageIndex])
+                      .deleteIn(['pages', selectedPageIndex])
+        }else{
+          if (pageLength >= 2) {
+            nextSelectedId = state.get(['pages', selectedPageIndex-1])
+
+            return state.set('selectedPageId', nextSelectedId)
+                        .setIn(['pagesById', selectedPageIndex-1, 'selectedComId'], 0)
+                        .deleteIn(['pagesById', selectedPageIndex])
+                        .deleteIn(['pages', selectedPageIndex])
+          }else {
+            //only one page and we delete it now
+            nextSelectedId = 0
+
+            return state.deleteIn(['pagesById', 0])
+                        .delete(['pages'], 0)
+                        .setIn(['pagesById', 0], Immutable.fromJS({
+                            id: 0,
+                            content: "douyu",
+                            selectedComId: 0,
+                            items: [
+                              {
+                                id : 0,
+                                index: 0,
+                                type: comTypes.BACKGROUND
+                              }]
+                          }))
+                        .set('pages', Immutable.fromJS([0]))
+                        .set('selectedPageId', nextSelectedId)
+
+          }
+        }
+
+      }else{
+        console.log("del component");
+        selectedItemIndex = state.getIn(['pagesById', selectedPageIndex, 'items'])
+                                 .findIndex(item=>item.get('id')===state.getIn(['pagesById', selectedPageIndex, 'selectedComId']))
+
+        return state.deleteIn(['pagesById', selectedPageIndex, 'items', selectedItemIndex])
+                    .setIn(['pagesById', selectedPageIndex, 'selectedComId'], 0)
+      }
+      break;
     default:
       return state
   }

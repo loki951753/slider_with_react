@@ -227,3 +227,21 @@ export function save(){
     })
   }
 }
+
+export function copy(){
+  return {
+    type: types.COPY
+  }
+}
+
+export function paste(){
+  return {
+    type: types.PASTE
+  }
+}
+
+export function del(){
+  return {
+    type: types.DEL
+  }
+}

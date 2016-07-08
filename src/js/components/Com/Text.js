@@ -14,8 +14,12 @@ class Text extends Component {
     return !(Immutable.is(this.props.data, nextProps.data)
               && (this.props.isSelected === nextProps.isSelected))
   }
+  componentDidUpdate(){
+    console.timeEnd('render text'+this.props.data.get('id'))
+  }
   render(){
     console.log('render Text');
+    console.time('render text'+this.props.data.get('id'));
 
     const data = Immutable.fromJS({
       id: this.props.data.get('id'),

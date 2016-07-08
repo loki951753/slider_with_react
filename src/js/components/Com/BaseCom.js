@@ -112,11 +112,15 @@ class BaseCom extends Component {
     this.resizeState = 2
     this.props.stopResize(this.id, this.state.width, this.state.height)
   }
-
+  componentDidUpdate(){
+    console.timeEnd('render base com' + this.id)
+  }
   render(){
     console.log('render base com');
 
-    const {isSelected, x, y, width, height, index, id} = this.props.data.toJS()
+    const {isSelected, x, y, width, height, index} = this.props.data.toJS()
+
+    console.time('render base com' + this.id);
 
     this.isSelecting = isSelected
     return (
@@ -128,7 +132,7 @@ class BaseCom extends Component {
           , position:'absolute'
           , zIndex: index
         }}
-        data-id={id}
+        data-id={this.id}
         onClick={this.handleClick}
         >
         <DraggableCore

@@ -18,15 +18,17 @@ class PageList extends Component {
     this.addPage = this.addPage.bind(this);
   }
   onClick(id){
+    console.time('on click pagelist')
     this.props.selectPage(id)
   }
   addPage(){
     this.props.addPage()
   }
   shouldComponentUpdate(nextProps){
-    // return !Immutable.is(this.props.pagesById.get('items'), nextProps.pagesById.get('items'))
-    //         || !Immutable.is(this.props.selectedPageId, nextProps.selectedPageId)
+    console.timeEnd('on click pagelist')
     return true
+    // return !Immutable.is(this.props.pagesById.get('items'), nextProps.pagesById.get('items'))
+            // || !Immutable.is(this.props.selectedPageId, nextProps.selectedPageId)
   }
   render(){
     console.log("render pagelist");

@@ -21,9 +21,12 @@ class Carousel extends Component {
   constructor(props){
     super(props)
   }
-
+  componentDidUpdate(){
+    console.timeEnd('render carousel')
+  }
   render(){
     console.log('render carousel');
+    console.time('render carousel');
     const { pagesById, selectedPageId } = this.props;
 
     return (

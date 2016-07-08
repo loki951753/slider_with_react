@@ -182,8 +182,12 @@ class PropertyPanel extends Component {
     }
   }
 
+  componentDidUpdate(){
+    console.timeEnd('property render')
+  }
   render(){
     console.log("render property panel");
+    console.time('property render')
     const {selectedPageId, pagesById} = this.props
 
     const selectedPage = pagesById.find(page=> page.get('id') === selectedPageId)

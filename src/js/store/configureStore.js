@@ -41,7 +41,8 @@ export default function configureStore(initialState) {
       persistState(getDebugSessionKey())
     );
   } else {
-    enhancer = compose(middleware);
+    // enhancer = compose(middleware);
+    enhancer = compose(applyMiddleware(thunk));
   }
 
   const store = createStore(rootReducer, initialState, enhancer);

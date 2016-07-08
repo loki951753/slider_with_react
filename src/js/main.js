@@ -10,7 +10,6 @@ import SliderMaker from './components/SliderMaker'
 const store = configureStore();
 const rootElement = document.getElementById('app');
 let ComponentEl;
-
 if (process.env.NODE_ENV !== 'production') {
   const DevTools = require('./containers/DevTools').default;
   const Perf = require('react-addons-perf')

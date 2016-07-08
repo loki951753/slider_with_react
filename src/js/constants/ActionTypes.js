@@ -37,3 +37,7 @@ export const TEXT_ALIGN_RIGHT = "TEXT_ALIGN_RIGHT"
 export const TEXT_ITALIC = "TEXT_ITALIC"
 export const TEXT_BOLD = "TEXT_BOLD"
 export const TEXT_UNDERLINED = "TEXT_UNDERLINED"
+
+export const COPY = "COPY"
+export const PASTE = "PASTE"
+export const DEL = "DEL"
