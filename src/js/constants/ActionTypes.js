@@ -6,6 +6,11 @@ export const SELECT_PAGE = 'SELECT_PAGE'
 export const ADD_COM = 'ADD_COM'
 export const DELETE_COM = 'DELETE_COM'
 export const SELECT_COM = 'SELECT_COM'
+export const MOVE_PAGE_UP = 'MOVE_PAGE_UP'
+export const MOVE_PAGE_DOWN = 'MOVE_PAGE_DOWN'
+export const COPY_PAGE = 'COPY_PAGE'
+export const PASTE_PAGE = 'PASTE_PAGE'
+export const DEL_PAGE = 'DEL_PAGE'
 
 export const SELECT_BACKGROUND = "SELECT_BACKGROUND"
 export const CHANGE_SLIDE_EFFECT = "CHANGE_SLIDE_EFFECT"

@@ -195,7 +195,8 @@ class PropertyPanel extends Component {
     this.id = selectedComId
     const items = selectedPage.get('items')
 
-    //except the id:0 for background
+    //compute all coms to display index
+    //except the id=0 for background
     const comCounts = items.size - 1
 
     const selectedCom = items.find(item=> item.get('id') === selectedComId).toJS()

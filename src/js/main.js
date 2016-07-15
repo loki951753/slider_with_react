@@ -1,4 +1,5 @@
 import '../styles/styles.sass';
+import '../styles/contextmenu.sass'
 
 import React from 'react';
 import ReactDOM from 'react-dom';

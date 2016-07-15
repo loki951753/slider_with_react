@@ -25,14 +25,27 @@ class PageList extends Component {
     this.props.addPage()
   }
   shouldComponentUpdate(nextProps){
-    console.timeEnd('on click pagelist')
     return true
-    // return !Immutable.is(this.props.pagesById.get('items'), nextProps.pagesById.get('items'))
-            // || !Immutable.is(this.props.selectedPageId, nextProps.selectedPageId)
+    //if only items selectedComId changed, we should not update this component
+
+    //TODO: check the logic below to improve performance
+
+    // if (!Immutable.is(this.props.selectedPageId, nextProps.selectedPageId)) return true
+    //
+    // if (!Immutable.is(this.props.pagesById, nextProps.pagesById)) return true
+    //
+    // let itemsHasChange = this.props.pagesById.some(function(page){
+    //   return !Immutable.is(page.get('items'),
+    //             nextProps.pagesById.find(nexrPropsPage=>page.get('id') === nexrPropsPage.get('id')).get('items'))
+    // })
+    // if (itemsHasChange) return true
+    //
+    // return false
   }
   render(){
     console.log("render pagelist");
     const { pagesById, selectedPageId } = this.props
+    const pageCount = pagesById.size
     return (
       <div className="page-list">
         <ul>
@@ -41,6 +54,7 @@ class PageList extends Component {
               return <PageListItem
                 key={page.get('id')}
                 index={index}
+                pageCount={pageCount}
                 page={page}
                 selected={selectedPageId === page.get('id')}
                 onClick={()=>(this.onClick(page.get('id')))}
@@ -71,5 +85,21 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+
 PageList = connect(mapStateToProps, mapDispatchToProps)(PageList)
 export default PageList
+
+// const PageListWithMenu = ContextMenuLayer(PAGELIST_MENU)(PageList)
+//
+// export default (
+//   React.createClass({
+//     render(){
+//       return (
+//         <div className="page-list-wrapper">
+//           <PageListWithMenu />
+//           <PagelistMenu />
+//         </div>
+//       )
+//     }
+//   })
+// )

@@ -12,12 +12,16 @@ import './Workspace.sass'
 class Workspace extends Component {
   constructor(props){
     super(props)
+    this.onClick = this.onClick.bind(this)
   }
-
+  onClick(e){
+    e.stopPropagation()
+    this.props.clickOtherArea()
+  }
   render(){
     console.log("render workspace");
     return (
-      <div className="workspace">
+      <div className="workspace" onClick={this.onClick}>
         <MaterialPanel></MaterialPanel>
         <Carousel></Carousel>
         <ControlPanel></ControlPanel>

@@ -13,3 +13,39 @@ export function selectPage(id){
     id
   }
 }
+
+
+export function movePageUp(index){
+  return {
+    type: types.MOVE_PAGE_UP,
+    index
+  }
+}
+
+export function movePageDown(index){
+  return {
+    type: types.MOVE_PAGE_DOWN,
+    index
+  }
+}
+
+export function copyPage(index){
+  return {
+    type: types.COPY_PAGE,
+    index
+  }
+}
+
+export function pastePage(index){
+  return {
+    type: types.PASTE_PAGE,
+    index
+  }
+}
+
+export function delPage(index){
+  return {
+    type: types.DEL_PAGE,
+    index
+  }
+}

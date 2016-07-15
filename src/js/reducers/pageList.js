@@ -105,14 +105,14 @@ const initialState = Immutable.fromJS({
         index: 1,
         type: comTypes.TEXT,
         style: {
-
+          textAlign: 'center'
         },
-        fontSize: 14,
+        fontSize: 40,
         fontSizeUnit: 'px',
         animation:'',
         content:['text0', 'text1'],
         position: [50, 50],
-        dimension: [50, 100]
+        dimension: [200, 50]
       }
       , {
         id : 2,
@@ -152,6 +152,7 @@ const pageList = function(state = initialState, action){
             .set('pagesById', state.get('pagesById').insert(selectedIndex+1, Immutable.fromJS({
               id: newId,
               content: action.content,
+              selectedComId: 0,
               items: [{
                 id : 0,
                 index: 0,
@@ -172,6 +173,118 @@ const pageList = function(state = initialState, action){
 
       return state.set('selectedPageId', action.id)
                   .setIn(['pagesById', selectedPageIndex, 'selectedComId'], 0)
+    }
+
+    case types.MOVE_PAGE_UP: {
+      console.log('move page up');
+      const index = action.index
+
+      const movingPageId = state.getIn(['pages', index])
+      const movingPagePreId = state.getIn(['pages', index-1])
+      const movingPage = state.getIn(['pagesById', index])
+      const movingPagePre = state.getIn(['pagesById', index-1])
+
+      return state.setIn(['pages', index], movingPagePreId)
+                  .setIn(['pages', index-1], movingPageId)
+                  .setIn(['pagesById', index], movingPagePre)
+                  .setIn(['pagesById', index-1], movingPage)
+
+    }
+
+    case types.MOVE_PAGE_DOWN: {
+      console.log('move page down');
+
+      const index = action.index
+
+      const movingPageId = state.getIn(['pages', index])
+      const movingPageNextId = state.getIn(['pages', index+1])
+      const movingPage = state.getIn(['pagesById', index])
+      const movingPageNext = state.getIn(['pagesById', index+1])
+
+      console.log(state.setIn(['pages', index], movingPageNextId)
+                  .setIn(['pages', index+1], movingPageId)
+                  .setIn(['pagesById', index], movingPageNext)
+                  .setIn(['pagesById', index+1], movingPage)
+                  .toJS());
+
+      return state.setIn(['pages', index], movingPageNextId)
+                  .setIn(['pages', index+1], movingPageId)
+                  .setIn(['pagesById', index], movingPageNext)
+                  .setIn(['pagesById', index+1], movingPage)
+    }
+
+    case types.COPY_PAGE: {
+      console.log('copy page');
+
+      let copied
+      //modify id when paste
+      //cause we dont know what it will be now
+      copied = {
+        type:'page',
+        content: state.getIn(['pagesById', action.index])
+      }
+      window.SliderMakerCopied = copied
+      //no state change when copy
+      return state
+    }
+
+    case types.PASTE_PAGE: {
+      console.log('paste page');
+
+      const selectedPageIndex = action.index
+      let copied = window.SliderMakerCopied
+
+      const newId = state.get('pages').max() + 1
+      return state.set('selectedPageId', newId)
+                  .set('pages', state.get('pages').insert(selectedPageIndex+1,newId))
+                  .set('pagesById', state.get('pagesById').insert(selectedPageIndex+1, copied.content.set('id', newId)))
+    }
+    case types.DEL_PAGE: {
+      console.log('del page');
+
+      const selectedPageIndex = action.index
+
+      //if not the last, ++
+      //if is the last, and has pre-element, select the last pre
+      let pageCount = state.get('pages').size
+      let nextSelectedId
+      if (selectedPageIndex !== pageCount - 1) {
+        nextSelectedId = state.getIn(['pages', selectedPageIndex+1])
+
+        return state.set('selectedPageId', nextSelectedId)
+                    .setIn(['pagesById', selectedPageIndex+1, 'selectedComId'], 0)
+                    .deleteIn(['pagesById', selectedPageIndex])
+                    .deleteIn(['pages', selectedPageIndex])
+      }else{
+        if (pageCount >= 2) {
+          nextSelectedId = state.get(['pages', selectedPageIndex-1])
+
+          return state.set('selectedPageId', nextSelectedId)
+                      .setIn(['pagesById', selectedPageIndex-1, 'selectedComId'], 0)
+                      .deleteIn(['pagesById', selectedPageIndex])
+                      .deleteIn(['pages', selectedPageIndex])
+        }else {
+          //only one page and we delete it now
+          nextSelectedId = 0
+
+          return state.deleteIn(['pagesById', 0])
+                      .delete(['pages'], 0)
+                      .setIn(['pagesById', 0], Immutable.fromJS({
+                          id: 0,
+                          content: "douyu",
+                          selectedComId: 0,
+                          items: [
+                            {
+                              id : 0,
+                              index: 0,
+                              type: comTypes.BACKGROUND
+                            }]
+                        }))
+                      .set('pages', Immutable.fromJS([0]))
+                      .set('selectedPageId', nextSelectedId)
+
+        }
+      }
     }
 
     case types.SELECT_BACKGROUND: {
@@ -202,13 +315,14 @@ const pageList = function(state = initialState, action){
             index: id,
             type: comTypes.TEXT,
             style: {
+              textAlign: "center"
             },
-            fontSize: 14,
+            fontSize: 40,
             fontSizeUnit: 'px',
             animation:'',
             content: ['new text'],
             position: [0, 0],
-            dimension: [100, 25]
+            dimension: [200, 50]
           }
           break;
         case comTypes.IMAGE:
@@ -604,9 +718,9 @@ const pageList = function(state = initialState, action){
         console.log("del page");
         //if not the last, ++
         //if is the last, and has pre-element, select the last pre
-        let pageLength = state.get('pages').size
+        let pageCount = state.get('pages').size
         let nextSelectedId
-        if (selectedPageIndex !== pageLength - 1) {
+        if (selectedPageIndex !== pageCount - 1) {
           nextSelectedId = state.getIn(['pages', selectedPageIndex+1])
 
           return state.set('selectedPageId', nextSelectedId)
@@ -614,7 +728,7 @@ const pageList = function(state = initialState, action){
                       .deleteIn(['pagesById', selectedPageIndex])
                       .deleteIn(['pages', selectedPageIndex])
         }else{
-          if (pageLength >= 2) {
+          if (pageCount >= 2) {
             nextSelectedId = state.get(['pages', selectedPageIndex-1])
 
             return state.set('selectedPageId', nextSelectedId)

@@ -18,7 +18,7 @@ class Text extends Component {
     console.timeEnd('render text'+this.props.data.get('id'))
   }
   render(){
-    console.log('render Text');
+    // console.log('render Text');
     console.time('render text'+this.props.data.get('id'));
 
     const data = Immutable.fromJS({

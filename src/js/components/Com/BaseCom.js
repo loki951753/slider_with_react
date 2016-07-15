@@ -14,7 +14,7 @@ import './BaseCom.sass'
 class BaseCom extends Component {
   constructor(props){
     super(props)
-    console.log('new a basecom');
+    // console.log('new a basecom');
     const data = props.data.toJS()
     this.id = data.id
 
@@ -116,7 +116,7 @@ class BaseCom extends Component {
     console.timeEnd('render base com' + this.id)
   }
   render(){
-    console.log('render base com');
+    // console.log('render base com');
 
     const {isSelected, x, y, width, height, index} = this.props.data.toJS()
 
@@ -149,7 +149,7 @@ class BaseCom extends Component {
                     onResize={this.handleOnResize}
                     onResizeStop={this.handleResizeStop}
                     >
-              <div style={{width: this.state.width, height: this.state.height}}>
+              <div style={{width: this.state.width, height: this.state.height, overflow: 'hidden'}}>
 
                 { this.props.children }
 

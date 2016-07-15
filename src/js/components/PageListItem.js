@@ -10,6 +10,11 @@ import Com_Image from './Com/Image'
 import classnames from 'classnames';
 import './PageListItem.sass'
 
+import { ContextMenuLayer } from "react-contextmenu";
+
+import PagelistItemMenu from './Menu/PagelistItemMenu'
+import { PAGELIST_ITEM_MENU } from '../constants/MenuTypes'
+
 class PageListItem extends Component {
   constructor(props){
     super(props)
@@ -83,4 +88,55 @@ class PageListItem extends Component {
   }
 }
 
-export default PageListItem
+// export default PageListItem
+
+// const PageListItemWithMenu = ContextMenuLayer(PAGELIST_ITEM_MENU, (props)=>({props: props}))(PageListItem)
+const PageListItemWithMenu = ContextMenuLayer((props)=>{
+  console.log('context menu layer');
+  console.log(props);
+  console.log(`${PAGELIST_ITEM_MENU}_${props.index}`);
+  return `${PAGELIST_ITEM_MENU}_${props.index}`
+}, (props)=>({props: props}))(PageListItem)
+
+export default (
+  React.createClass({
+    getInitialState(){
+      // console.log('get initial state');
+      // console.log(this.props.index);
+      // console.log(this.props.pageCount);
+      return {
+        canMoveUp: (this.props.index !== 0),
+        canMoveDown: (this.props.index !== (this.props.pageCount - 1)),
+
+        canPaste: false
+      }
+    },
+    onContextMenu(){
+      // console.log(this.props.pageCount);
+      // this.setState({
+      //   canMoveUp: (this.props.index !== 0),
+      //   canMoveDown: (this.props.index !== (this.props.pageCount - 1))
+      // })
+      this.setState({
+        canPaste: window.SliderMakerCopied && (window.SliderMakerCopied.type === 'page')
+      })
+    },
+    render(){
+      console.log('render' + this.props.index);
+      const canMoveUp = this.props.index !== 0
+      const canMoveDown = this.props.index !== this.props.pageCount - 1
+      // console.log(this.state.canMoveUp);
+      // console.log(this.state.canMoveDown);
+      return (
+        <div onContextMenu={this.onContextMenu}>
+          <PageListItemWithMenu {...this.props}/>
+          <PagelistItemMenu
+            index={this.props.index}
+            canMoveUp={canMoveUp}
+            canMoveDown={canMoveDown}
+            canPaste={this.state.canPaste} />
+        </div>
+      )
+    }
+  })
+)

@@ -10,6 +10,7 @@ import Workspace from '../components/Workspace';
 import PropertyPanel from '../components/PropertyPanel';
 
 import parsekey from 'parse-key'
+
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {blue500} from 'material-ui/styles/colors';
@@ -101,7 +102,14 @@ class SliderMaker extends Component {
     }else if (this.matchesKey(paste, e)) {
       e.preventDefault()
       console.log('ctrl-v');
-      this.props.paste()
+      if(!window.SliderMakerCopied){
+        this.setState({
+          open:true,
+          message: '没有可粘贴的东西'
+        })
+      }else{
+        this.props.paste()
+      }
     }else if (this.matchesKey(undo, e)) {
       e.preventDefault()
       console.log('ctrl-z');

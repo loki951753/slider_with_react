@@ -16,7 +16,7 @@ class Image extends Component {
               && (this.props.isSelected === nextProps.isSelected))
   }
   render(){
-    console.log('render image');
+    // console.log('render image');
     const baseStyle = {
       height: '100%',
       backgroundRepeat: 'no-repeat',
